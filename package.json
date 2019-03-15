@@ -1,0 +1,26 @@
+{
+  "name": "hoaxy",
+  "version": "1.0.0",
+  "description": "auth middleware",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "set NODE_ENV=development && node server.js"
+  },
+  "author": "adityacprtm",
+  "license": "ISC",
+  "dependencies": {
+    "coap": "^0.23.1",
+    "consign": "^0.1.6",
+    "http": "0.0.0",
+    "jsonwebtoken": "^8.5.0",
+    "mqtt": "^1.7.4",
+    "socket.io": "^2.2.0",
+    "winston": "^3.2.1",
+    "yargs": "^13.2.2"
+  },
+  "devDependencies": {
+    "request": "^2.88.0",
+    "socket.io-client": "^2.2.0"
+  }
+}
