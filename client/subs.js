@@ -1,9 +1,10 @@
 var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://127.0.0.1')
 client.on('connect', function () {
-    client.subscribe('myTopic')
+    client.subscribe('home')
 })
 client.on('message', function (topic, message) {
     context = message.toString();
-    console.log(context)
+    json = JSON.stringify(context).replace(/\\/g, "")
+    console.log(JSON.stringify(json))
 })

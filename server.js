@@ -1,21 +1,49 @@
 (function () {
-    let start, configure, app, logger, coap, consign, auth, argv;
+    let start, configure, app, logger, coap, consign, auth, argv, setup, setupAscoltatore;
     let coapServer, mqttServer, authServer;
 
     coap = require('coap')
     mqtt = require('mqtt')
     auth = require('http')
-    module.exports.app = app = require('http').createServer()
+    module.exports.app = app = require('http').Server()
     io = require('socket.io')(app)
     consign = require('consign')
+    ascoltatori = require('ascoltatori')
+    redis = require('redis')
+    app.redis = {}
+
+    module.exports.setupAscoltatore = setupAscoltatore = (opts) => {
+        if (opts == null) {
+            opts = {}
+        }
+        app.ascoltatore = new ascoltatori.RedisAscoltatore({
+            redis: redis,
+            port: opts.port,
+            host: opts.host,
+            db: opts.db
+        })
+        return app.ascoltatore
+    }
+
+    module.exports.setup = setup = (opts) => {
+        let args
+        if (opts == null) {
+            opts = {}
+        }
+        args = [opts.port, opts.host]
+        app.redis.client = redis.createClient.apply(redis,args)
+        app.redis.client.select(opts.db || 0)
+        return setupAscoltatore(opts)
+    }
 
     module.exports.configure = configure = () => {
         return consign({
                 cwd: 'lib',
                 verbose: false
             })
-            .include('helpers')
-            .include('controllers')
+            .include('models')
+            .then('helpers')
+            .then('controllers')
             .into(app)
     }
 
@@ -40,6 +68,12 @@
         opts.redisPort || (opts.redisPort = argv['redis-port'])
         opts.redisHost || (opts.redisHost = argv['redis-host'])
         opts.redisDB || (opts.redisDB = argv['redis-db'])
+
+        setup({
+            port: opts.redisPort,
+            host: opts.redisHost,
+            db: opts.redisDB
+        })
 
         // CoAP Gateway
         coapServer = coap.createServer()

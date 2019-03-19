@@ -10,11 +10,13 @@
   "author": "adityacprtm",
   "license": "ISC",
   "dependencies": {
+    "ascoltatori": "^4.3.0",
     "coap": "^0.23.1",
     "consign": "^0.1.6",
     "http": "0.0.0",
     "jsonwebtoken": "^8.5.0",
     "mqtt": "^1.7.4",
+    "redis": "^2.8.0",
     "socket.io": "^2.2.0",
     "winston": "^3.2.1",
     "yargs": "^13.2.2"
