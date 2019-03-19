@@ -1,5 +1,10 @@
 var mqtt = require('mqtt')
-var client = mqtt.connect('mqtt://127.0.0.1')
+var options = {
+    port: 1883,
+    username: 'alice',
+    password: 'secret'
+}
+var client = mqtt.connect('mqtt://127.0.0.1',options)
 client.on('connect', function () {
     client.subscribe('home')
 })

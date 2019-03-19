@@ -25,7 +25,6 @@ var payload = {
     }
 }
 
-
 var client = mqtt.connect('mqtt://127.0.0.1', options);
 client.on('connect', function () {
     setInterval(function () {
