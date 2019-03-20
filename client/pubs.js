@@ -9,28 +9,28 @@ var client = mqtt.connect('mqtt://127.0.0.1', options);
 client.on('connect', function () {
     console.log('Connected')
     setInterval(function () {
-        var topic = 'home'
+        var topic = 'office'
         var payload = {
-            protocol: "mqtt",
+            protocol: client.options.protocol,
             timestamp: new Date().getTime().toString(),
             topic: topic,
             sensor: {
                 tipe: "4325",
                 index: "string",
-                ip: "string",
+                ip: client.options.host,
                 module: "string"
             },
             humidity: {
-                value: "64554",
+                value: Math.floor(Math.random() * 100),
                 unit: "string"
             },
             temperature: {
-                value: "12",
+                value: Math.floor(Math.random() * 100),
                 unit: "string"
             }
         }
         client.publish(topic, JSON.stringify(payload), [1]);
-        console.log('Message Sent');
+        console.log('Message Sent '+ topic);
     }, 10000);
 });
 

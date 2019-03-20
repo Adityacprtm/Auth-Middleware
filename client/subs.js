@@ -6,7 +6,7 @@ var options = {
 }
 var client = mqtt.connect('mqtt://127.0.0.1', options)
 client.on('connect', function () {
-    var topic = "home"
+    var topic = "office"
     console.log('connected')
     client.subscribe(topic, {
         qos: 1
