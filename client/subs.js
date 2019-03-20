@@ -4,12 +4,23 @@ var options = {
     username: 'alice',
     password: 'secret'
 }
-var client = mqtt.connect('mqtt://127.0.0.1',options)
+var client = mqtt.connect('mqtt://127.0.0.1', options)
 client.on('connect', function () {
-    client.subscribe('home')
+    var topic = "home"
+    console.log('connected')
+    client.subscribe(topic, {
+        qos: 1
+    })
+    console.log('subscribed')
 })
+
 client.on('message', function (topic, message) {
     context = message.toString();
     json = JSON.stringify(context).replace(/\\/g, "")
-    console.log(JSON.stringify(json))
+    console.log(json)
 })
+
+client.on('close', (error) => {
+    if (error) console.log(error.code)
+    console.log('Server has refused connection')
+});
