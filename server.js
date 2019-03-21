@@ -31,7 +31,7 @@
             opts = {}
         }
         args = [opts.port, opts.host]
-        app.redis.client = redis.createClient.apply(redis,args)
+        app.redis.client = redis.createClient.apply(redis, args)
         app.redis.client.select(opts.db || 0)
         return setupAscoltatore(opts)
     }
