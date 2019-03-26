@@ -1,27 +1,40 @@
 var request = require('request');
 var jwt = require('jsonwebtoken')
 
-var options = {
+var optionsDevice = {
     uri: 'http://127.0.0.1:8080/',
     method: 'POST',
     json: {
-        'id': '123',
-        'device': 'device1',
-        'timestamp': new Date().getTime().toString(),
-        'ip': '192.168.40.56',
-        'mac': 'qwerty12345',
-        'secret': 'P6EMy4OcpnPB94F5y7YmVJcc2aO6O68A'
+        "id": "1234",
+        "secret": "secret1",
+        "device": "nodemcu",
+        "mac": "987"
     }
 };
 
-request(options, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-        console.log(body) // Print the shortened url.
-        jwt.verify(body.token, 'P6EMy4OcpnPB94F5y7YmVJcc2aO6O68A', (err, decode) => {
-            if (err) console.log(err)
-            console.log(decode)
-        })
-    } else {
-        console.log('anything')
+var optionsUser = {
+    uri: 'http://127.0.0.1:8080/admin/login',
+    method: 'PUT',
+    json: {
+        "username": "user",
+        "password": "secret",
+        "device": {
+            "id": "5678",
+            "secret": "secret2",
+            "device": "arduino",
+            "mac": "321"
+        }
     }
+}
+
+request(optionsDevice, function (error, response, body) {
+    if (error) console.log('ERROR: ' + error);
+    console.log('statusCode:', response && response.statusCode);
+    console.log('body:', body);
 });
+
+request(optionsUser, function (error, response, body) {
+    if (error) console.log('ERROR: ' + error);
+    console.log('statusCode:', response && response.statusCode);
+    console.log('body:', body);
+})

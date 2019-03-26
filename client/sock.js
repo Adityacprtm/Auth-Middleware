@@ -1,6 +1,12 @@
 var io = require('socket.io-client')
+
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQiLCJkZXZpY2UiOiJub2RlbWN1IiwidGltZXN0YW1wIjoxNTUzNTEwNzkxLCJpcCI6Ijo6ZmZmZjoxMjcuMC4wLjEiLCJtYWMiOiI5ODciLCJzZWNyZXQiOiJzZWNyZXQiLCJpYXQiOjE1NTM1MTA3OTEsImV4cCI6MTU1MzUyMTU5MX0.Q4BPplWlWVAt5eNwOiMoc1HZrxRcftqCrHggTAX1J4E'
+
 var socket = io.connect('http://127.0.0.1:' + 3000, {
-    reconnect: true
+    reconnect: true,
+    query: {
+        token: token
+    }
 });
 
 var topic = 'office'
@@ -8,7 +14,7 @@ socket.on('connect', () => {
     socket.emit('subscribe', topic);
 });
 
-socket.on('/r/'+topic, (data) => {
+socket.on('/r/' + topic, (data) => {
     console.log(data)
 })
 
@@ -16,12 +22,12 @@ socket.on('error', (error) => {
     console.log(error)
 });
 
-socket.on('connect_error', (error) => {
-    console.log(error)
-});
-
 socket.on('disconnect', (error) => {
     console.log(error)
+})
+
+socket.on('jwtMsg', (reason) => {
+    console.log(reason);
 })
 
 // WebSocket = require('ws')

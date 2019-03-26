@@ -1,6 +1,8 @@
 var coap = require('coap')
 
-var topic = 'coap'
+var topic = 'home'
+var token = 'token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQiLCJkZXZpY2UiOiJub2RlbWN1IiwidGltZXN0YW1wIjoxNTUzNTEwNzkxLCJpcCI6Ijo6ZmZmZjoxMjcuMC4wLjEiLCJtYWMiOiI5ODciLCJzZWNyZXQiOiJzZWNyZXQiLCJpYXQiOjE1NTM1MTA3OTEsImV4cCI6MTU1MzUyMTU5MX0.Q4BPplWlWVAt5eNwOiMoc1HZrxRcftqCrHggTAX1J4E'
+
 var payload = {
     protocol: 'coap',
     timestamp: new Date().getTime().toString(),
@@ -12,11 +14,11 @@ var payload = {
         module: "string"
     },
     humidity: {
-        value: Math.floor(Math.random() * 100),
+        value: Math.floor(Date.now() / 1000),
         unit: "string"
     },
     temperature: {
-        value: Math.floor(Math.random() * 100),
+        value: Math.floor(Date.now() / 1000),
         unit: "string"
     }
 }
@@ -25,7 +27,8 @@ var payload = {
 var req = coap.request({
     host: '127.0.0.1',
     port: '5683',
-    pathname: '/r/home',
+    pathname: '/r/' + topic,
+    query: token,
     method: 'post'
 });
 
@@ -38,19 +41,20 @@ req.on('response', function (res) {
 
 req.write(JSON.stringify(payload))
 
-var getReq = coap.request({
-    host: '127.0.0.1',
-    port: '5683',
-    pathname: '/r/office',
-    method: 'get'
-})
+// var getReq = coap.request({
+//     host: '127.0.0.1',
+//     port: '5683',
+//     pathname: '/r/' + topic,
+//     query: token,
+//     method: 'get'
+// })
 
-getReq.on('response', function (res) {
-    res.pipe(process.stdout)
-    res.on('end', function () {
-        process.exit(0)
-    })
-})
+// getReq.on('response', function (res) {
+//     res.pipe(process.stdout)
+//     res.on('end', function () {
+//         process.exit(0)
+//     })
+// })
 
-getReq.end()
+// getReq.end()
 req.end()

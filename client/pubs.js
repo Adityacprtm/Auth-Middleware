@@ -2,8 +2,8 @@ var mqtt = require('mqtt');
 
 var options = {
     port: 1883,
-    username: 'alice',
-    password: 'secret'
+    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQiLCJkZXZpY2UiOiJub2RlbWN1IiwidGltZXN0YW1wIjoxNTUzNTEwNzkxLCJpcCI6Ijo6ZmZmZjoxMjcuMC4wLjEiLCJtYWMiOiI5ODciLCJzZWNyZXQiOiJzZWNyZXQiLCJpYXQiOjE1NTM1MTA3OTEsImV4cCI6MTU1MzUyMTU5MX0.Q4BPplWlWVAt5eNwOiMoc1HZrxRcftqCrHggTAX1J4E',
+    password: ''
 }
 var client = mqtt.connect('mqtt://127.0.0.1', options);
 client.on('connect', function () {
@@ -30,11 +30,15 @@ client.on('connect', function () {
             }
         }
         client.publish(topic, JSON.stringify(payload), [1]);
-        console.log('Message Sent '+ topic);
-    }, 10000);
+        console.log('Message Sent ' + topic);
+    }, 2000);
 });
 
 client.on('close', (error) => {
-    if (error) console.log(error.code)
-    console.log('Server has refused connection')
+    if (error) console.log(error)
 });
+
+client.on('error', (error) => {
+    if (error) console.log(error.toString())
+    client.end(true)
+})
