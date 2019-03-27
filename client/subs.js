@@ -1,7 +1,7 @@
 var mqtt = require('mqtt')
 var options = {
     port: 1883,
-    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQiLCJkZXZpY2UiOiJub2RlbWN1IiwidGltZXN0YW1wIjoxNTUzNDg1NTM3LCJpcCI6Ijo6ZmZmZjoxMjcuMC4wLjEiLCJtYWMiOiI5ODciLCJzZWNyZXQiOiJzZWNyZXQiLCJpYXQiOjE1NTM0ODU1MzcsImV4cCI6MTU1MzQ5NjMzN30.GKQGhnuuI0tBNknbOXuZ2Ypt2iM54kEa0XW35tnrPc4',
+    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQiLCJzZWNyZXQiOiJzZWNyZXQxIiwiZGV2aWNlIjoibm9kZW1jdSIsIm1hYyI6Ijc4OSIsImlhdCI6MTU1MzYxNzcyNywiZXhwIjoxNTUzNjI4NTI3fQ.rCvBfvCPBQ7heyYwFa9j1rtzUwjuB080fk3btIIRSQk',
     password: ''
 }
 var client = mqtt.connect('mqtt://127.0.0.1', options)
@@ -27,10 +27,10 @@ client.on('close', (error) => {
 
 client.on('error', (error) => {
     if (error) console.log(error.toString())
-    client.stream.end()
+    client.end(true)
 })
 
 client.on('disconnect', (reason) => {
     console.log(reason);
-    client.stream.end()
+    client.end(true)
 })

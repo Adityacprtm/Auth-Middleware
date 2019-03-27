@@ -1,6 +1,5 @@
 (function () {
-    let start, configure, app, logger, coap, consign, auth, argv, setup, setupAscoltatore, redis;
-    let coapServer, mqttServer, authServer;
+    let start, configure, app, logger, coap, consign, auth, argv, setup, setupAscoltatore, redis, coapServer;
 
     coap = require('coap')
     mqtt = require('mqtt')
