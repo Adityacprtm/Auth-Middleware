@@ -2,7 +2,7 @@ var request = require('request'),
     username = "1234",
     password = "secret_key",
     url = "http://127.0.0.1:8080/",
-    auth = "Basic " + new Buffer(username + ":" + password).toString()
+    auth = "Basic " + new Buffer.from((username + ":" + password).toString())
     //auth = "Basic " + username + ":" + password;
 
 var optionsDevice = {
