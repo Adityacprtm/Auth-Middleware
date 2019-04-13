@@ -18,7 +18,7 @@ var optionsDevice = {
     },
     json: true,
     body: {
-        "_id": 5678,
+        "id": 5678,
         "name": "nodemcu",
         "mac": "0987",
     }

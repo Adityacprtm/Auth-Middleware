@@ -1,6 +1,6 @@
 var mqtt, optionsMqtt, optionsAuth, client, request
 var username, password, url, auth, uuid, randomMac,
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEwN2FjOWNiLTQ0MjgtNDY5MC05MzQzLWMyYTQzM2U2YzAwOSIsImRldmljZSI6Im5vZGVtY3UiLCJtYWMiOiI1NDo1MjowMDo4Yjo5OTplMCIsImlwIjoiOjpmZmZmOjEyNy4wLjAuMSIsInRpbXN0YW1wIjoxNTU0MTc4MjAyOTg5LCJpYXQiOjE1NTQxNzgyMDIsImV4cCI6MTU1NDE4MTgwMn0.SXLqjPMWUbYhkwWjB78Aqc2McvCG1eIPbcLX3vrIs9Y"
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTY3OCwibmFtZSI6Im5vZGVtY3UiLCJtYWMiOiIwOTg3IiwiaXAiOiI6OmZmZmY6MTI3LjAuMC4xIiwidGltZXN0YW1wIjoxNTU1MTc3NDc5MDIyLCJpYXQiOjE1NTUxNzc0NzksImV4cCI6MTU1NTE3NzUzOX0.pSjQg9EcyyEOQV1EIGz2XYmnAlZVnxWAXLF7FU5erN0"
 
 mqtt = require('mqtt')
 request = require('request')
