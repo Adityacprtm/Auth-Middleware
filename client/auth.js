@@ -10,7 +10,7 @@ var request = require('request'),
     auth = "Basic " + new Buffer.from(username + ":" + password).toString('base64')
 
 var optionsDevice = {
-    url: url,
+    url: url + "request",
     method: 'POST',
     headers: {
         'content-type': 'application/json',
@@ -18,9 +18,9 @@ var optionsDevice = {
     },
     json: true,
     body: {
-        "id": "5678",
-        "device": "nodemcu",
-        "mac": "0987"
+        "_id": 5678,
+        "name": "nodemcu",
+        "mac": "0987",
     }
 };
 
@@ -42,14 +42,33 @@ var optionsUser = {
     }
 }
 
-// request(optionsDevice, function (error, response, body) {
+var validDevice = {
+    url: url + "valid",
+    method: 'POST',
+    headers: {
+        'content-type': 'application/json',
+        'Authorization': auth
+    },
+    json: true,
+    body: {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjU2NzgsIm5hbWUiOiJub2RlbWN1IiwibWFjIjoiMDk4NyIsImlwIjoiOjpmZmZmOjEyNy4wLjAuMSIsInRpbWVzdGFtcCI6MTU1NTA2MDg0OTI4OCwiaWF0IjoxNTU1MDYwODQ5LCJleHAiOjE1NTUwNjA5MDl9.1SbWqtcmzM-tWmWQNy-5r9W6Pv4jf-NFX9S5F-vXQhk"
+    }
+}
+
+request(optionsDevice, function (error, response, body) {
+    if (error) console.log('ERROR: ' + error);
+    console.log('statusCode:', response && response.statusCode);
+    console.log('body:', body);
+});
+
+// request(optionsUser, function (error, response, body) {
+//     if (error) console.log('ERROR: ' + error);
+//     console.log('statusCode:', response && response.statusCode);
+//     console.log('body:', body);
+// })
+
+// request(validDevice, function (error, response, body) {
 //     if (error) console.log('ERROR: ' + error);
 //     console.log('statusCode:', response && response.statusCode);
 //     console.log('body:', body);
 // });
-
-request(optionsUser, function (error, response, body) {
-    if (error) console.log('ERROR: ' + error);
-    console.log('statusCode:', response && response.statusCode);
-    console.log('body:', body);
-})

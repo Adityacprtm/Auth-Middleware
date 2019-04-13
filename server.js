@@ -1,5 +1,8 @@
 (function () {
-    let start, configure, app, logger, coap, consign, auth, argv, setup, setupAscoltatore, redis, coapServer;
+    let start, configure, app,
+        logger, coap, consign,
+        auth, argv, setup,
+        setupAscoltatore, redis, coapServer;
 
     coap = require('coap')
     mqtt = require('mqtt')
@@ -37,9 +40,9 @@
 
     module.exports.configure = configure = () => {
         return consign({
-                cwd: 'lib',
-                verbose: false
-            })
+            cwd: 'libs',
+            verbose: false
+        })
             .include('models')
             .then('helpers')
             .then('controllers')
@@ -56,7 +59,7 @@
             opts = {}
         }
         if (cb == null) {
-            cb = () => {}
+            cb = () => { }
         }
 
         opts.port || (opts.port = argv['port'])
