@@ -34,7 +34,7 @@ module.exports = (app) => {
                                 }
                                 subscriptions[topic] = subscription
                                 Data.subscribe(topic, subscription)
-                                return Data.find('topics', topic, (err, data) => {
+                                return Data.find(topic, (err, data) => {
                                     if (err) logger.error(err)
                                     if ((data != null ? data.value : void 0) != null) {
                                         return subscription(data)

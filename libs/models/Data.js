@@ -1,39 +1,67 @@
-var jwt = require('jsonwebtoken')
-var SECRET_KEY = 'secret'
+let EventEmitter = require('events').EventEmitter
+let globalEventEmitter = new EventEmitter()
+globalEventEmitter.setMaxListeners(0)
 
-module.exports = (app) => {
+const KEYS_SET_NAME = 'topics'
+
+module.exports = function (app) {
     var Data, buildKey
-
-    buildKey = (type, key) => type + ':' + key
+    buildKey = (key) => 'topic:' + key
 
     Data = (function () {
-        function Data(type_, key_, value_) {
-            this.redisKey = buildKey(type_, key_)
+        function Data(key_, value_) {
             this.key = key_
             this.value = value_
             this.value || (this.value = null)
         }
 
-        Data.prototype.save = function (type) {
-            if (type == "devices") {
-                app.redis.client.set(this.redisKey, this.value)
-            } else {
-                app.redis.client.set(this.redisKey, this.value, ((_this) => {
-                    return app.ascoltatore.publish(_this.key, _this.value)
-                })(this))
+        Object.defineProperty(Data.prototype, 'key', {
+            enumerable: true,
+            configurable: false,
+            get: function () {
+                return this._key
+            },
+            set: function (key) {
+                this.redisKey = buildKey(key)
+                this._key = key
+                return this._key
             }
-            return app.redis.client.sadd(type, this.key)
+        })
+
+        Object.defineProperty(Data.prototype, 'jsonValue', {
+            configurable: false,
+            enumerable: true,
+            get: function () {
+                return JSON.stringify(this.value)
+            },
+            set: function (val) {
+                this.value = JSON.parse(val)
+                return this.value
+            }
+        })
+
+        Data.prototype.save = function (callback) {
+            app.redis.client.set(this.redisKey, this.jsonValue, ((_this) => {
+                return (err) => {
+                    return app.ascoltatore.publish(_this.key, _this.value, () => {
+                        if (callback != null) {
+                            return callback(err, _this)
+                        }
+                    })
+                }
+            })(this))
+            return app.redis.client.sadd(KEYS_SET_NAME, this.key)
         }
         return Data
     })()
 
-    Data.find = function (type, pattern, callback) {
+    Data.find = (pattern, callback) => {
         var foundRecord
         foundRecord = (key) => {
-            return app.redis.client.get(buildKey(type, key), (err, value) => {
+            return app.redis.client.get(buildKey(key), (err, value) => {
                 if (err) {
                     if (callback != null) {
-                        callback(err, null)
+                        callback(err)
                     }
                     return
                 }
@@ -44,17 +72,15 @@ module.exports = (app) => {
                     return
                 }
                 if (callback != null) {
-                    return callback(null, Data.fromRedis(type, key, value))
+                    return callback(null, Data.fromRedis(key, value))
                 }
             })
         }
         if (pattern.constructor !== RegExp) {
             foundRecord(pattern)
         } else {
-            app.redis.client.smembers(type, (err, topics) => {
-                if (err != null) {
-                    callback(err, null)
-                }
+            app.redis.client.smembers(KEYS_SET_NAME, (err, topics) => {
+                if (err) console.log(err)
                 var i, len, results, topic
                 results = []
                 for (i = 0, len = topics.length; i < len; i++) {
@@ -72,136 +98,43 @@ module.exports = (app) => {
     }
 
     Data.findOrCreate = function () {
-        var args, key, value
+        var arg, args, callback, key, value
         args = Array.prototype.slice.call(arguments)
         key = args.shift()
-        value = args.shift()
-        app.redis.client.get(buildKey('topics', key), (err, oldValue) => {
+        arg = args.shift()
+        if (typeof arg === 'function') {
+            callback = arg
+        } else {
+            value = arg
+            callback = args.shift()
+        }
+        app.redis.client.get(buildKey(key), (err, oldValue) => {
             if (err) console.log(err)
             var data
-            data = Data.fromRedis('topics', key, oldValue)
+            data = Data.fromRedis(key, oldValue)
             if (value != null) {
                 data.value = value
             }
-            return data.save('topics')
+            return data.save(callback)
         })
         return Data
     }
 
-    Data.fromRedis = function (type, key, value) {
+    Data.fromRedis = function (topic, value) {
         var data
-        data = new Data(type, key, value)
-        data.value = value
+        data = new Data(topic)
+        data.jsonValue = value
         return data
     }
 
     Data.subscribe = function (topic, callback) {
-        callback._subscriber = (actualTopic, value) => callback(new Data('topics', actualTopic, value))
+        callback._subscriber = (actualTopic, value) => callback(new Data(actualTopic, value))
         app.ascoltatore.subscribe(topic, callback._subscriber)
         return this
     }
 
     Data.unsubscribe = function (topic, callback) {
         app.ascoltatore.unsubscribe(topic, callback._subscriber)
-        return this
-    }
-
-    Data.request = function (payload, callback) {
-        var deviceId, expiration, token, data
-        deviceId = payload.id
-        expiration = {
-            expiresIn: '1h'
-        }
-        app.redis.client.smembers('devices', (err, devices) => {
-            if (err != null) {
-                callback(err, null)
-                return
-            }
-            var i, len
-            len = devices.length
-
-            // Find device Find 
-            var deviceMatch = devices.find(elements => elements == deviceId)
-            if (deviceMatch) {
-                app.redis.client.get(buildKey('devices', deviceMatch), (err, replies) => {
-                    if (err) callback(err, null)
-                    jwt.verify(replies, SECRET_KEY, (err) => {
-                        if (err) {
-                            if (err.name == "TokenExpiredError") {
-                                token = jwt.sign(payload, SECRET_KEY, expiration)
-                                data = Data.fromRedis('devices', deviceMatch, token)
-                                data.save('devices')
-                                callback(null, token)
-                            } else {
-                                callback(JSON.stringify(err), null)
-                            }
-                        } else {
-                            callback('Already has token', null)
-                        }
-                    })
-                })
-            } else {
-                token = jwt.sign(payload, SECRET_KEY, expiration)
-                data = Data.fromRedis('devices', deviceId, token)
-                data.save('devices')
-                callback(null, token)
-            }
-
-            // Find device For loop
-            if (len == 0) len += 1
-            for (i = 0; i < len; i++) {
-                if (deviceId == devices[i]) {
-                    app.redis.client.get(buildKey('devices', deviceId), (err, replies) => {
-                        if (err != null) {
-                            callback(err, null)
-                        }
-                        jwt.verify(replies, SECRET_KEY, (err, decoded) => {
-                            if (err) {
-                                if (err.name == "TokenExpiredError") {
-                                    token = jwt.sign(payload, SECRET_KEY, expiration)
-                                    data = Data.fromRedis('devices', deviceId, token)
-                                    data.save('devices')
-                                    callback(null, token)
-                                } else {
-                                    callback(JSON.stringify(err), null)
-                                }
-                            } else {
-                                callback('Already has token', null)
-                            }
-                        })
-                    })
-                } else {
-                    token = jwt.sign(payload, SECRET_KEY, expiration)
-                    data = Data.fromRedis('devices', deviceId, token)
-                    data.save('devices')
-                    callback(null, token)
-                }
-            }
-        })
-        return this
-    }
-
-    Data.validity = function (token, callback) {
-        var deviceId, decoded
-        try {
-            decoded = jwt.verify(token, SECRET_KEY)
-            deviceId = decoded.id
-        } catch (error) {
-            callback(true, error)
-            return
-        }
-        Data.find('devices', deviceId, (err, data) => {
-            if (err != null) {
-                callback(true, JSON.stringify(err))
-                return
-            } else {
-                if (token == data.value) {
-                    callback(null, true)
-                } else {
-                    callback(null, false)
-                }
-            }
-        })
         return this
     }
     return Data

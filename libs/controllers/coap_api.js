@@ -109,7 +109,7 @@ module.exports = (app) => {
                                 })
                             }
 
-                            Data.find('topics', topic, function (err, data) {
+                            Data.find(topic, function (err, data) {
                                 if (err != null || data == null) {
                                     sendResponse('4.04', {
                                         message: 'not found'

@@ -86,7 +86,7 @@ module.exports = (app) => {
                                 }
                             }
                             Data.subscribe(topic, listener)
-                            return Data.find('topics', client.subscriptions[i], (err, data) => {
+                            return Data.find(client.subscriptions[i], (err, data) => {
                                 if (err != null) {
                                     logger.error('There\'s an error: %s', err)
                                 } else {
