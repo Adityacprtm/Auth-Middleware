@@ -3,6 +3,8 @@ module.exports = (app) => {
     const auth = require('../auth/controller')
 
     return (req, res) => {
+
+        // get path url
         const url = req.url;
 
         // handle sending response
@@ -32,8 +34,7 @@ module.exports = (app) => {
                             logger.http('Token generated for %s', req.socket.localAddress)
                         }
                     })
-                    // logger.http('Server has refused, client %s identity rejected', req.socket.localAddress)
-                });
+                })
             }
             else if (url == '/register') {
                 logger.http('Incoming User %s request from %s', req.method, req.socket.localAddress)
@@ -63,11 +64,11 @@ module.exports = (app) => {
                     auth.User.home_page(req, res, (err) => {
                         if (err) logger.error('There\'s an error, %s', err)
                     })
-                // } else if (url == '/login') {
-                //     logger.http('Incoming User %s request Login from %s', req.method, req.socket.localAddress)
-                //     auth.User.login_page(req, res, (err) => {
-                //         if (err) logger.error('There\'s an error, %s', err)
-                //     })
+                    // } else if (url == '/login') {
+                    //     logger.http('Incoming User %s request Login from %s', req.method, req.socket.localAddress)
+                    //     auth.User.login_page(req, res, (err) => {
+                    //         if (err) logger.error('There\'s an error, %s', err)
+                    //     })
                 } else if (url == '/register') {
                     logger.http('Incoming User %s request Register from %s', req.method, req.socket.localAddress)
                     auth.User.register_handler(req, res, (err, result) => {

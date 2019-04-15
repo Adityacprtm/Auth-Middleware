@@ -1,6 +1,6 @@
 var io = require('socket.io-client')
 
-var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTY3OCwibmFtZSI6Im5vZGVtY3UiLCJtYWMiOiIwOTg3IiwiaXAiOiI6OmZmZmY6MTI3LjAuMC4xIiwidGltZXN0YW1wIjoxNTU1MTc3NDc5MDIyLCJpYXQiOjE1NTUxNzc0NzksImV4cCI6MTU1NTE3NzUzOX0.pSjQg9EcyyEOQV1EIGz2XYmnAlZVnxWAXLF7FU5erN0'
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI5N3NqdWk1bW9kaCIsImRldmljZV9uYW1lIjoibm9kZW1jdSIsInRpbWVzdGFtcCI6MTU1NTM0MzI3OTgxNywicm9sZSI6InB1Ymxpc2hlciIsImlhdCI6MTU1NTM0MzI3OSwiZXhwIjoxNTU1MzQzMzM5LCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.4TgonqeOFL7v8FJwTh9LWWxiG2KhVMP_qprEBcAYR1g'
 
 var socket = io.connect('http://127.0.0.1:' + 3000, {
     reconnect: true,
@@ -26,7 +26,7 @@ socket.on('disconnect', (error) => {
     console.log(error)
 })
 
-socket.on('jwtMsg', (reason) => {
+socket.on('error_msg', (reason) => {
     console.log(reason);
 })
 

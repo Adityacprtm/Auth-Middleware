@@ -90,7 +90,7 @@ exports.register_handler = function (req, res, callback) {
         ejs.renderFile(__dirname + '/views/pages/register.ejs', { title: title }, function (err, result) {
             if (err != null) {
                 error_page(req, res, 500, 'Internal Server Error')
-                callback(err)
+                callback(err, null)
             }
             else {
                 res.writeHead(200, { 'Content-Type': 'text/html' })
