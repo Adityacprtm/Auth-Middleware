@@ -4,11 +4,13 @@ const SECRET_KEY = 'supersecret'
 
 let deviceSchema = mongoose.Schema({
     id: Number,
-    name: String,
-    mac: String,
+    device_name: String,
+    description: String,
+    role: String,
     ip: String,
     timestamp: Number,
-    token: String
+    token: String,
+    user: String
 })
 
 let userSchema = mongoose.Schema({
@@ -46,32 +48,29 @@ function generateToken(payload, Models, callback) {
     })
 }
 
-exports.request = function (payload, type, callback) {
+exports.request = function (payload, callback) {
     connect()
-    let Models, token
-    Models = mongoose.model(type, deviceSchema)
-    Models.find({ 'id': payload.id }, function (err, entities) {
+    let Models
+    Models = mongoose.model('devices', deviceSchema)
+    Models.find({ 'id': payload.id }, function (err, docs) {
         if (err) { callback(err, null) }
-        else {
-            token = entities[0].token
-            if (token != "") {
-                checkToken(token, (err, reply) => {
-                    if (err != null) {
-                        generateToken(payload, Models, (err, token) => {
-                            if (err != null) { callback(err, null) }
-                            else { callback(null, token) }
-                        })
-                    }
-                    else {
-                        callback('Already has token', null)
-                    }
-                })
-            } else {
-                generateToken(payload, Models, (err, token) => {
-                    if (err != null) { callback(err, null) }
-                    else { callback(null, token) }
-                })
-            }
+        if (docs[0].token) {
+            checkToken(docs[0].token, (err, reply) => {
+                if (err != null) {
+                    generateToken(payload, Models, (err, token) => {
+                        if (err != null) { callback(err, null) }
+                        else { callback(null, token) }
+                    })
+                }
+                else {
+                    callback('Already has token', null)
+                }
+            })
+        } else {
+            generateToken(payload, Models, (err, token) => {
+                if (err != null) { callback(err, null) }
+                else { callback(null, token) }
+            })
         }
     })
 }
@@ -81,6 +80,45 @@ exports.validity = function (token, callback) {
     checkToken(token, (err, reply) => {
         if (err != null) { callback(err, false) }
         else { callback(null, true) }
+    })
+}
+
+exports.check_user = function (data_user, callback) {
+    connect()
+    var Models
+    Models = mongoose.model('users', userSchema)
+    Models.findOne({ 'username': data_user.username, 'password': data_user.password }, function (err, entities) {
+        if (err) { callback(err, null) }
+        else {
+            if (entities) {
+                if (entities.username == data_user.username && entities.password == data_user.password) {
+                    callback(null, true)
+                } else {
+                    callback(null, false)
+                }
+            } else {
+                callback(null, false)
+            }
+        }
+    })
+}
+
+exports.device_handler = function (data_device, callback) {
+    connect()
+    var Models = mongoose.model('devices', deviceSchema)
+    Models.find({ 'device_name': data_device.device_name, 'user': data_device.user }, (err, entities) => {
+        if (err) { callback(err, null) }
+        else {
+            if (entities.length == 0) {
+                var device = new Models(data_device)
+                device.save((err, device) => {
+                    if (err) { callback(err, null) }
+                    else { callback(null, 'Device Successfully Registered') }
+                })
+            } else {
+                callback(null, 'Device Already Registered')
+            }
+        }
     })
 }
     // connMongo = function (data, cmd, callback) {
