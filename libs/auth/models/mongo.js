@@ -1,9 +1,10 @@
 var jwt = require('jsonwebtoken')
 let mongoose = require('mongoose')
+var uniqid = require('uniqid');
 const SECRET_KEY = 'supersecret'
 
 let deviceSchema = mongoose.Schema({
-    id: Number,
+    device_id: String,
     device_name: String,
     description: String,
     role: String,
@@ -11,7 +12,7 @@ let deviceSchema = mongoose.Schema({
     timestamp: Number,
     token: String,
     user: String
-})
+}, { versionKey: false })
 
 let userSchema = mongoose.Schema({
     username: String,
@@ -33,14 +34,20 @@ function checkToken(token, callback) {
     })
 }
 
-function generateToken(payload, Models, callback) {
+function generateToken(docs, Models, callback) {
+    var payload = {
+        device_id: docs.device_id,
+        device_name: docs.device_name,
+        timestamp: docs.timestamp,
+        role: docs.role
+    }
     // token = jwt.sign(payload, SECRET_KEY, { expiresIn: '5m' })
-    jwt.sign(payload, SECRET_KEY, { expiresIn: '1m' }, (err, token) => {
+    jwt.sign(payload, SECRET_KEY, { expiresIn: '1m', issuer: 'adityacprtm.com' }, (err, token) => {
         if (err) {
             callback(err.name, null)
         } else {
             payload['token'] = token
-            Models.updateOne({ 'id': payload.id }, payload, function (err) {
+            Models.updateOne({ 'device_id': payload.device_id }, payload, function (err) {
                 if (err) callback(err, null)
             })
             callback(null, token)
@@ -52,25 +59,30 @@ exports.request = function (payload, callback) {
     connect()
     let Models
     Models = mongoose.model('devices', deviceSchema)
-    Models.find({ 'id': payload.id }, function (err, docs) {
+    Models.findOne({ 'device_id': payload.device_id }, function (err, docs) {
         if (err) { callback(err, null) }
-        if (docs[0].token) {
-            checkToken(docs[0].token, (err, reply) => {
-                if (err != null) {
-                    generateToken(payload, Models, (err, token) => {
-                        if (err != null) { callback(err, null) }
-                        else { callback(null, token) }
-                    })
-                }
-                else {
-                    callback('Already has token', null)
-                }
-            })
+        if (docs) {
+            docs.timestamp = payload.timestamp
+            if (docs.token) {
+                checkToken(docs.token, (err, reply) => {
+                    if (err != null) {
+                        generateToken(docs, Models, (err, token) => {
+                            if (err != null) { callback(err, null) }
+                            else { callback(null, token) }
+                        })
+                    }
+                    else {
+                        callback('Already has token', null)
+                    }
+                })
+            } else {
+                generateToken(docs, Models, (err, token) => {
+                    if (err != null) { callback(err, null) }
+                    else { callback(null, token) }
+                })
+            }
         } else {
-            generateToken(payload, Models, (err, token) => {
-                if (err != null) { callback(err, null) }
-                else { callback(null, token) }
-            })
+            callback('Device Not Registered', null)
         }
     })
 }
@@ -105,6 +117,7 @@ exports.check_user = function (data_user, callback) {
 
 exports.device_handler = function (data_device, callback) {
     connect()
+    data_device['device_id'] = uniqid.process()
     var Models = mongoose.model('devices', deviceSchema)
     Models.find({ 'device_name': data_device.device_name, 'user': data_device.user }, (err, entities) => {
         if (err) { callback(err, null) }

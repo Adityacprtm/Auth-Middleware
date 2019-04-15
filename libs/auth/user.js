@@ -1,8 +1,6 @@
 var ejs = require('ejs')
 var data_mongo = require('./models/Mongo')
 var { parse } = require('querystring');
-var NodeSession = require('node-session');
-var session = new NodeSession({ secret: 'ket_session' });
 
 function collect_request_data(req, callback) {
     const FORM_URLENCODED = 'application/x-www-form-urlencoded';
@@ -99,8 +97,7 @@ exports.register_handler = function (req, res, callback) {
                 res.end(result);
             }
         })
-    }
-    else if (req.method == "POST") {
+    } else if (req.method == "POST") {
         user_checker(req, res, (err, data_device) => {
             if (err) {
                 error_page(req, res, 406, err)
@@ -118,36 +115,39 @@ exports.register_handler = function (req, res, callback) {
                 })
             }
         })
+    } else {
+        error_page(req, res, 405, 'Method Not Allowed')
+        callback('Method Not Allowed', null)
     }
 }
 
-exports.login_page = function (req, res, callback) {
-    var user, title = 'Login | Auth Middleware';
-    if (req.method == 'GET') {
-        ejs.renderFile(__dirname + '/views/pages/login.ejs', { title: title, user: user }, function (err, result) {
-            // render on success
-            if (!err) {
-                res.writeHead(200, { 'Content-Type': 'text/html' })
-                res.end(result);
-            }
-            // render or error
-            else {
-                res.writeHead(402, { 'Content-Type': 'text/html' })
-                res.end('An error occurred');
-                callback(err)
-            }
-        })
-    } else if (req.method == 'POST') {
-        login_checker(req, res, (err, data) => {
-            if (err) {
-                res.writeHead(402, { 'Content-Type': 'text/html' })
-                res.end('An error occurred');
-                callback(err)
-            } else {
-                req.session.put('user', data.username);
-                res.writeHead(301, { "Location": "http://" + req.headers['host'] + '/register' })
-                res.end();
-            }
-        })
-    }
-}
+// exports.login_page = function (req, res, callback) {
+//     var user, title = 'Login | Auth Middleware';
+//     if (req.method == 'GET') {
+//         ejs.renderFile(__dirname + '/views/pages/login.ejs', { title: title, user: user }, function (err, result) {
+//             // render on success
+//             if (!err) {
+//                 res.writeHead(200, { 'Content-Type': 'text/html' })
+//                 res.end(result);
+//             }
+//             // render or error
+//             else {
+//                 res.writeHead(402, { 'Content-Type': 'text/html' })
+//                 res.end('An error occurred');
+//                 callback(err)
+//             }
+//         })
+//     } else if (req.method == 'POST') {
+//         login_checker(req, res, (err, data) => {
+//             if (err) {
+//                 res.writeHead(402, { 'Content-Type': 'text/html' })
+//                 res.end('An error occurred');
+//                 callback(err)
+//             } else {
+//                 req.session.put('user', data.username);
+//                 res.writeHead(301, { "Location": "http://" + req.headers['host'] + '/register' })
+//                 res.end();
+//             }
+//         })
+//     }
+// }

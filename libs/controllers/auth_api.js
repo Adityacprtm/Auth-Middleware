@@ -25,7 +25,7 @@ module.exports = (app) => {
                     // request token
                     auth.Mongo.request(payload, (err, data) => {
                         if (err != null) {
-                            sendResponse(406, JSON.stringify({ message: err }))
+                            sendResponse(401, JSON.stringify({ message: err }))
                             logger.http('Not generate token for %s, %s', req.socket.localAddress, err)
                         } else {
                             sendResponse(200, JSON.stringify({ status: 'Created', message: data }))
@@ -63,11 +63,11 @@ module.exports = (app) => {
                     auth.User.home_page(req, res, (err) => {
                         if (err) logger.error('There\'s an error, %s', err)
                     })
-                } else if (url == '/login') {
-                    logger.http('Incoming User %s request Login from %s', req.method, req.socket.localAddress)
-                    auth.User.login_page(req, res, (err) => {
-                        if (err) logger.error('There\'s an error, %s', err)
-                    })
+                // } else if (url == '/login') {
+                //     logger.http('Incoming User %s request Login from %s', req.method, req.socket.localAddress)
+                //     auth.User.login_page(req, res, (err) => {
+                //         if (err) logger.error('There\'s an error, %s', err)
+                //     })
                 } else if (url == '/register') {
                     logger.http('Incoming User %s request Register from %s', req.method, req.socket.localAddress)
                     auth.User.register_handler(req, res, (err, result) => {
