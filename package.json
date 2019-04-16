@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "ascoltatori": "^4.3.0",
+    "bcrypt": "^3.0.6",
     "coap": "^0.23.1",
     "consign": "^0.1.6",
     "ejs": "^2.6.1",

@@ -2,6 +2,7 @@ var jwt = require('jsonwebtoken')
 let mongoose = require('mongoose')
 var uniqid = require('uniqid');
 const SECRET_KEY = 'supersecret'
+var bcrypt = require('bcrypt')
 
 let deviceSchema = mongoose.Schema({
     device_id: String,
@@ -101,15 +102,17 @@ exports.check_user = function (data_user, callback) {
     connect()
     var Models
     Models = mongoose.model('users', userSchema)
-    Models.findOne({ 'username': data_user.username, 'password': data_user.password }, function (err, entities) {
+    Models.find({ 'username': data_user.username }, function (err, entities) {
         if (err) { callback(err, null) }
         else {
-            if (entities) {
-                if (entities.username == data_user.username && entities.password == data_user.password) {
-                    callback(null, true)
-                } else {
-                    callback(null, false)
-                }
+            if (entities.length > 0) {
+                entities.forEach(element => {
+                    if (element.username == data_user.username && bcrypt.compareSync(data_user.password, element.password)) {
+                        callback(null, true)
+                    } else {
+                        callback(null, false)
+                    }
+                })
             } else {
                 callback(null, false)
             }
