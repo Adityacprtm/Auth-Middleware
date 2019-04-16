@@ -74,7 +74,7 @@ module.exports = (app) => {
                             listener = (data) => {
                                 try {
                                     stringValue = (data.value && data.value.type === 'Buffer') ?
-                                        new Buffer(data.value).toString() :
+                                        new Buffer.from(data.value).toString() :
                                         data.value.toString()
                                     return client.publish({
                                         topic: data.key,
