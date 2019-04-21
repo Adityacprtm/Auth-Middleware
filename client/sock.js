@@ -1,6 +1,6 @@
 var io = require('socket.io-client')
 
-var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI5N3NqdWk1bW9kaCIsImRldmljZV9uYW1lIjoibm9kZW1jdSIsInRpbWVzdGFtcCI6MTU1NTM0MzI3OTgxNywicm9sZSI6InB1Ymxpc2hlciIsImlhdCI6MTU1NTM0MzI3OSwiZXhwIjoxNTU1MzQzMzM5LCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.4TgonqeOFL7v8FJwTh9LWWxiG2KhVMP_qprEBcAYR1g'
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiJhendqdWpoNjJpaCIsImRldmljZV9uYW1lIjoiYXJkdWlubyIsInRpbWVzdGFtcCI6IjE1NTU4NDQ4NzM1NDEiLCJyb2xlIjoic3Vic2NyaWJlciIsImlhdCI6MTU1NTg0NDg3MywiZXhwIjoxNTU1ODQ1MDUzLCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.OTW2U06WsQJD2jWZ0WTk7YYxEc1MrgYF3B2Pxa-C8tU'
 
 var socket = io.connect('http://127.0.0.1:' + 3000, {
     reconnect: true,

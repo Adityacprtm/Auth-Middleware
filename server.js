@@ -1,16 +1,18 @@
-let start, configure, app,
-    logger, coap, consign,
-    auth, argv, setup,
-    setupAscoltatore, redis, coapServer;
+let start, configure, app, logger, coap, consign, session, bodyParser, cookieParser,
+    argv, setup, setupAscoltatore, redis, coapServer, MongoStore;
 
 coap = require('coap')
 mqtt = require('mqtt')
-auth = require('http')
-module.exports.app = app = require('http').Server()
+express = require('express')()
+session = require('express-session')
+module.exports.app = app = require('http').Server(express)
 io = require('socket.io')(app)
+MongoStore = require('connect-mongo')(session);
 consign = require('consign')
 ascoltatori = require('ascoltatori')
 redis = require('redis')
+bodyParser = require('body-parser');
+cookieParser = require('cookie-parser');
 app.redis = {}
 
 module.exports.setupAscoltatore = setupAscoltatore = (opts) => {
@@ -86,9 +88,30 @@ module.exports.start = start = (opts, cb) => {
     });
 
     // Auth Gateway
-    authServer = auth.createServer(app.controllers.auth_api).listen(opts.auth, () => {
+    // auth.createServer(app.controllers.auth_api).listen(opts.auth, () => {
+    //     logger.http('HTTP server listening on port %d in %s mode', opts.auth, process.env.NODE_ENV)
+    // });
+
+    express.locals.pretty = true;
+    express.set('port', 8080);
+    express.set('views', __dirname + '/libs/auth/web/views');
+    express.set('view engine', 'pug');
+    express.use(cookieParser());
+    express.use(bodyParser.json());
+    express.use(bodyParser.urlencoded({ extended: true }));
+    express.use(require('express').static(__dirname + '/libs/auth/web/public'));
+    express.use(session({
+        secret: 'supersecret',
+        proxy: true,
+        resave: true,
+        saveUninitialized: true,
+        store: new MongoStore({ url: 'mongodb://127.0.0.1:27017' })
+    }))
+    // express.use(require('./libs/auth/web/routes'))
+    express.use('/', app.controllers.auth_api)
+    express.listen(opts.auth, () => {
         logger.http('HTTP server listening on port %d in %s mode', opts.auth, process.env.NODE_ENV)
-    });
+    })
 
     return app
 }

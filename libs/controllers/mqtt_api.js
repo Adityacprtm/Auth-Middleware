@@ -1,8 +1,8 @@
 module.exports = (app) => {
 
-    const data_mongo = require('../auth/models/Mongo')
     const logger = app.helpers.winston
     const Data = app.models.Data
+    const DM = require('../auth/config/device-manager')
 
     return function (client) {
         let self = this
@@ -16,7 +16,7 @@ module.exports = (app) => {
             client.id = packet.clientId
             client.subscriptions = []
 
-            data_mongo.validity(token, (err, reply) => {
+            DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
                     client.connack({

@@ -2,7 +2,7 @@ module.exports = (app) => {
 
     const logger = app.helpers.winston
     const Data = app.models.Data
-    const data_mongo = require('../auth/models/Mongo')
+    const DM = require('../auth/config/device-manager')
     const url = require('url');
 
     return (req, res) => {
@@ -25,7 +25,7 @@ module.exports = (app) => {
             topic = /^\/r\/(.+)$/.exec(modUrl)[1]
             token = url.parse(req.url, true).query.token;
             // logger.coap('Client from %s Connecting . . .', req.rsinfo.address)
-            data_mongo.validity(token, (err, reply) => {
+            DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
                     sendResponse('5.00', {
@@ -72,7 +72,7 @@ module.exports = (app) => {
             topic = /^\/r\/(.+)$/.exec(modUrl)[1]
             token = url.parse(req.url, true).query.token;
             // logger.coap('Client from %s Connecting . . .', req.rsinfo.address)
-            data_mongo.validity(token, (err, reply) => {
+            DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
                     sendResponse('5.00', {

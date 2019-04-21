@@ -2,7 +2,7 @@ module.exports = (app) => {
 
     const logger = app.helpers.winston
     const Data = app.models.Data
-    const data_mongo = require('../auth/models/Mongo')
+    const DM = require('../auth/config/device-manager')
 
     return io.on('connection', (socket) => {
         var token, authorized, subscriptions, subscription
@@ -10,7 +10,7 @@ module.exports = (app) => {
         if (socket.handshake.query && socket.handshake.query.token) {
             token = socket.handshake.query.token
             //logger.socket('Client %s connecting . . .', socket.id)
-            data_mongo.validity(token, (err, reply) => {
+            DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
                     socket.emit('error_msg', err.message)
@@ -26,7 +26,7 @@ module.exports = (app) => {
                                 subscription = (currentData) => {
                                     let stringValue = null
                                     if (currentData.value.type === 'Buffer' || currentData.value instanceof Buffer) {
-                                        stringValue = new Buffer(currentData.value).toString()
+                                        stringValue = new Buffer.from(currentData.value).toString()
                                     } else {
                                         stringValue = currentData.value
                                     }

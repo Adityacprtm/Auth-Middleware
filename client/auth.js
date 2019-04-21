@@ -10,7 +10,7 @@ var request = require('request'),
     auth = "Basic " + new Buffer.from(username + ":" + password).toString('base64')
 
 var optionsDevice = {
-    url: url + "request",
+    url: url + "device/request",
     method: 'POST',
     headers: {
         'content-type': 'application/json',
@@ -18,7 +18,7 @@ var optionsDevice = {
     },
     json: true,
     body: {
-        "device_id": "azwjujh62ih",
+        "device_id": "97sjui5modh",
         "device_name": "nodemcu"
     }
 };
