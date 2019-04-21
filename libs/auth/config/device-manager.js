@@ -60,21 +60,35 @@ exports.validity = function (token, callback) {
     })
 }
 
-exports.deviceHandler = function (dataDevice, callback) {
-    var Models, temp
+exports.addDevice = function (dataDevice, callback) {
+    var temp
     temp = uniqid.process()
-    devices.findOne({ device_id: temp }, (err, entities) => {
+    devices.findOne({ device_id: temp }, (err, rep) => {
         if (err) { callback(err, null) }
-        if (entities.length == 0) {
+        if (rep.length == 0) {
             dataDevice['device_id'] = temp
         } else {
             dataDevice['device_id'] = uniqid.process()
         }
-        devices.insertOne(dataDevice, (err, r) => {
-            if (err) { callback(err, null) }
-            else { callback(null, 'Device Successfully Registered') }
+        devices.findOne({ device_name: dataDevice.device_name }, function (err, rep) {
+            if (rep) {
+                callback('device-name-taken')
+            } else {
+                devices.insertOne(dataDevice, (err, r) => {
+                    if (err) { callback(err, null) }
+                    else { callback(null, 'Device Successfully Registered') }
+                })
+            }
         })
     })
+}
+
+exports.getDevice = function (user, callback) {
+    devices.find({ user: user }).toArray(
+        function (e, res) {
+            if (e) callback(e)
+            else callback(null, res)
+        });
 }
 
 function checkToken(token, callback) {

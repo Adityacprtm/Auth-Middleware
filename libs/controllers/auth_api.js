@@ -9,7 +9,7 @@ module.exports = (app) => {
     router.post('/device/request', (req, res) => {
         logger.http('Incoming Device for %s request token from %s ', req.method, req.socket.localAddress)
         const payload = req.body
-        payload['ip'] = req.socket.localAddress
+        payload['ip'] = req.ip
         payload['timestamp'] = Date.now().toString()
         // request token
         DM.request(payload, (err, data) => {
@@ -79,9 +79,9 @@ module.exports = (app) => {
                 email: req.body['email'],
                 user: req.body['user'],
                 pass: req.body['pass'],
-            }, function (e) {
-                if (e) {
-                    res.status(400).send(e);
+            }, function (err) {
+                if (err) {
+                    res.status(400).send(err);
                 } else {
                     res.status(200).send('ok');
                 }
@@ -117,6 +117,35 @@ module.exports = (app) => {
                     }
                 });
             }
+        })
+
+    router.route('/device')
+        .get((req, res) => {
+            if (req.session.user == null) {
+                res.redirect('/');
+            } else {
+                var user = req.session.user.user
+                DM.getDevice(user, (err, devices) => {
+                    res.render('device', {
+                        title: 'Device List',
+                        dvc: devices
+                    })
+                })
+            }
+        })
+        .post((req, res) => {
+            DM.addDevice({
+                device_name: req.body['device_name'],
+                role: req.body['role'],
+                description: req.body['description'],
+                user: req.body['user']
+            }, (err) => {
+                if (err) {
+                    res.status(400).send(err);
+                } else {
+                    res.status(200).send('ok');
+                }
+            })
         })
 
     router.post('/delete', function (req, res) {

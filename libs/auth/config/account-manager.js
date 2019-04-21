@@ -106,7 +106,7 @@ exports.addNewAccount = function (newData, callback) {
 					saltAndHash(newData.pass, function (hash) {
 						newData.pass = hash;
 						// append date stamp when record was created //
-						newData.date = new Date()
+						newData.date = new Date().toString()
 						accounts.insertOne(newData, callback);
 					});
 				}

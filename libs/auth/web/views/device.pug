@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    nav.navbar.navbar-expand.navbar-light.bg-light
+        .nav-item
+            .navbar-brand Control Panel
+        .navbar-nav.ml-auto
+            .nav-item
+                button.btn.navbar-btn.btn-outline-dark#btn-logout Sign Out
+            .nav-item
+                button.btn.navbar-btn.btn-outline-dark#btn-device Devices
+
+    include register
+    include modals/alert
+    include modals/confirm
+
+block scripts
+    script(src='/js/views/register.js')
+    script(src='/js/controllers/regisDeviceController.js')
+    script(src='/js/form-validators/registerValidator.js')
