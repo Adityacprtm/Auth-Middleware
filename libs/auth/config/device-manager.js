@@ -65,10 +65,10 @@ exports.addDevice = function (dataDevice, callback) {
     temp = uniqid.process()
     devices.findOne({ device_id: temp }, (err, rep) => {
         if (err) { callback(err, null) }
-        if (rep.length == 0) {
-            dataDevice['device_id'] = temp
-        } else {
+        if (rep) {
             dataDevice['device_id'] = uniqid.process()
+        } else {
+            dataDevice['device_id'] = temp
         }
         devices.findOne({ device_name: dataDevice.device_name }, function (err, rep) {
             if (rep) {

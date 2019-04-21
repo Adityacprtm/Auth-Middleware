@@ -3,7 +3,7 @@ $(document).ready(function () {
     var rdc = new RegisDeviceController();
     var rv = new RegisterValidator();
 
-    $('#account-form').ajaxForm({
+    $('#register-form').ajaxForm({
         beforeSubmit: function (formData, jqForm, options) {
             return rv.validateForm();
         },
@@ -20,16 +20,16 @@ $(document).ready(function () {
     $('#name-tf').focus();
 
     // customize the account settings form //
-    $('#account-form h2').text('Register Device');
-    $('#account-form #sub').text('Register your device.');
+    $('#register-form h2').text('Register Device');
+    $('#register-form #sub').text('Register your device.');
     $('#id-tf').attr('disabled', 'disabled');
-    $('#account-form-btn1').html('Cancel');
-    $('#account-form-btn2').html('Submit');
-    $('#account-form-btn2').addClass('btn-primary');
+    $('#register-form-btn1').html('Cancel');
+    $('#register-form-btn2').html('Submit');
+    $('#register-form-btn2').addClass('btn-primary');
 
     // setup the alert that displays when an account is successfully created //
     $('.modal-alert').modal({ show: false, keyboard: false, backdrop: 'static' });
     $('.modal-alert .modal-header h4').text('Account Created!');
-    $('.modal-alert .modal-body p').html('Your account has been created.</br>Click OK to return to the login page.');
+    $('.modal-alert .modal-body p').html('Your device has been registered.</br>Click OK to return to the home page.');
 
 })

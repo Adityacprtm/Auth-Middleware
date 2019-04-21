@@ -1,3 +1,4 @@
+
 function RegisterValidator() {
     // build array maps of the form inputs & control groups //
 
@@ -34,12 +35,12 @@ function RegisterValidator() {
     }
 }
 
-AccountValidator.prototype.showInvalidName = function () {
+RegisterValidator.prototype.showInvalidName = function () {
     this.controlGroups[0].addClass('error');
     this.showErrors(['That device name is already in use.']);
 }
 
-AccountValidator.prototype.validateForm = function () {
+RegisterValidator.prototype.validateForm = function () {
     var e = [];
     for (var i = 0; i < this.controlGroups.length; i++) this.controlGroups[i].removeClass('error');
     if (this.validateDeviceName(this.formFields[0].val()) == false) {

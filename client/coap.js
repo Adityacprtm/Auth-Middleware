@@ -1,7 +1,7 @@
 var coap = require('coap')
 
 var topic = 'office'
-var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI5N3NqdWk1bW9kaCIsImRldmljZV9uYW1lIjoibm9kZW1jdSIsInRpbWVzdGFtcCI6IjE1NTU4NDQ5NzQxNDIiLCJyb2xlIjoicHVibGlzaGVyIiwiaWF0IjoxNTU1ODQ0OTc0LCJleHAiOjE1NTU4NDUxNTQsImlzcyI6ImFkaXR5YWNwcnRtLmNvbSJ9.Wds-KAOu3MfgVQ2NdWE88pQQOA4riM0mrnJLxk_aAUI'
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI2cXNqdXI0eG1wNiIsImRldmljZV9uYW1lIjoicmFzcGJlcnJ5IHBpIiwidGltZXN0YW1wIjoiMTU1NTg2NDAwMjk1OCIsInJvbGUiOiJwdWJsaXNoZXIiLCJpYXQiOjE1NTU4NjQwMDIsImV4cCI6MTU1NTg2NDE4MiwiaXNzIjoiYWRpdHlhY3BydG0uY29tIn0.CJhgrWWQ9tOE8smbwyXcYNei_kHamQu3OMeHdDc4oKo'
 
 var payload = {
     protocol: 'coap',

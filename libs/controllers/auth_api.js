@@ -134,11 +134,12 @@ module.exports = (app) => {
             }
         })
         .post((req, res) => {
+            console.log('POST DEVICE')
             DM.addDevice({
                 device_name: req.body['device_name'],
                 role: req.body['role'],
                 description: req.body['description'],
-                user: req.body['user']
+                user: req.session.user.user
             }, (err) => {
                 if (err) {
                     res.status(400).send(err);

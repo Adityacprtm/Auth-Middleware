@@ -129,6 +129,34 @@ h6 {
   margin-right: 0.5rem;
 }
 
+#register-form-container label {
+  text-align: right;
+  margin-top: 2px;
+}
+
+#register-form-container input,
+#register-form-container select {
+  font-size: 0.875rem;
+}
+
+#register-form-container .col-sm-9 {
+  padding-left: 0;
+}
+
+#register-form-container .margin-zero {
+  margin-bottom: 0;
+}
+
+#register-form-container .form-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+#register-form-container .form-buttons>:not(:last-child) {
+  margin-right: 0.5rem;
+}
+
 /*
 	modal windows
 */

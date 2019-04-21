@@ -18,7 +18,7 @@ var optionsDevice = {
     },
     json: true,
     body: {
-        "device_id": "97sjui5modh",
+        "device_id": "6qsjur4xmp6",
         "device_name": "nodemcu"
     }
 };
