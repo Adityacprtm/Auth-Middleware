@@ -70,7 +70,7 @@ exports.addDevice = function (dataDevice, callback) {
         } else {
             dataDevice['device_id'] = temp
         }
-        devices.findOne({ device_name: dataDevice.device_name }, function (err, rep) {
+        devices.findOne({ device_name: dataDevice.device_name, user: dataDevice.user }, function (err, rep) {
             if (rep) {
                 callback('device-name-taken')
             } else {

@@ -10,17 +10,12 @@ block content
             .nav-item
                 button.btn.navbar-btn.btn-outline-dark#btn-account My Account
             .nav-item
-                button.btn.navbar-btn.btn-outline-dark#btn-add-device Add Devices
+                button.btn.navbar-btn.btn-outline-dark#btn-device Devices
 
-    
-    .container.center-vertical
-        .card-columns
-            #card-device
-
-
+    include register
     include modals/alert
 
 block scripts
-    script(src='/js/views/device.js')
+    script(src='/js/views/register.js')
     script(src='/js/controllers/registerController.js')
     script(src='/js/form-validators/registerValidator.js')

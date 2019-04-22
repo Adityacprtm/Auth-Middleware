@@ -1,9 +1,3 @@
-
-// preset form values if we receive a userdata object //
-- device = typeof(dvc) != 'undefined' ? dvc : { }
-// store the userId on the client side in a hidden input field //
-input(type='hidden', value= device._id)#userId
-
 #register-form-container.center-vertical
 	form.card.card-body.bg-light(method='post')#register-form
 		h2
@@ -13,22 +7,22 @@ input(type='hidden', value= device._id)#userId
 		.form-group.row.margin-zero 
 			label.col-sm-3.col-form-label.col-form-label-sm Device ID
 			.col-sm-9
-				input.form-control#id-tf(type='text', name='device_id', value=device.device_id).disabled
+				input.form-control#id-tf(type='text', name='device_id').disabled
 		
 		.form-group.row
 			label.col-sm-3.col-form-label.col-form-label-sm Device Name
 			.col-sm-9
-				input.form-control#name-tf(type='text', name='device_name', value= device.device_name)
+				input.form-control#name-tf(type='text', name='device_name')
 
 		.form-group.row
 			label.col-sm-3.col-form-label.col-form-label-sm Role
 			.col-sm-9
-				input.form-control#role-tf(type='text', name='role', value= device.role)
+				input.form-control#role-tf(type='text', name='role')
 
 		.form-group.row
 			label.col-sm-3.col-form-label.col-form-label-sm Description
 			.col-sm-9
-				input.form-control#desc-tf(type='text', name='description', value= device.description)
+				input.form-control#desc-tf(type='text', name='description')
 
 		hr
 		.form-buttons

@@ -1,6 +1,6 @@
 $(document).ready(function () {
 
-    var rdc = new RegisDeviceController();
+    var rdc = new RegisterController();
     var rv = new RegisterValidator();
 
     $('#register-form').ajaxForm({

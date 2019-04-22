@@ -14,6 +14,8 @@ function HomeController() {
 
 	$('#btn-device').click(function () { window.location.href = '/device'; });
 
+	$('#btn-account').click(function () { window.location.href = '/home'; });
+
 	this.deleteAccount = function () {
 		$('.modal-confirm').modal('hide');
 		var that = this;

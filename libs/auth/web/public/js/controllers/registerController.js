@@ -1,5 +1,5 @@
 
-function RegisDeviceController() {
+function RegisterController() {
 
     var that = this;
 
@@ -11,6 +11,13 @@ function RegisDeviceController() {
 
     // 
     $('#btn-logout').click(function () { that.attemptLogout(); });
+
+    $('#btn-account').click(function () { window.location.href = '/home'; });
+
+    $('#btn-add-device').click(function () { window.location.href = '/register'; });
+
+    $('#btn-device').click(function () { window.location.href = '/device'; });
+    
 
     this.attemptLogout = function () {
         var that = this;

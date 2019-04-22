@@ -58,9 +58,11 @@ module.exports = (app) => {
                 } else {
                     req.session.user = o;
                     if (req.body['remember-me'] == 'false') {
+                        logger.http('User %s has login', req.session.user.user)
                         res.status(200).send(o);
                     } else {
                         AM.generateLoginKey(o.user, req.ip, function (key) {
+                            logger.http('User %s has login', req.session.user.user)
                             res.cookie('login', key, { maxAge: 900000 });
                             res.status(200).send(o);
                         });
@@ -83,6 +85,7 @@ module.exports = (app) => {
                 if (err) {
                     res.status(400).send(err);
                 } else {
+                    logger.http('User %s has registered', req.body['user'])
                     res.status(200).send('ok');
                 }
             });
@@ -113,6 +116,7 @@ module.exports = (app) => {
                         res.status(400).send('error-updating-account');
                     } else {
                         req.session.user = o.value;
+                        logger.http('User %s has changed the account', req.session.user.user)
                         res.status(200).send('ok');
                     }
                 });
@@ -133,17 +137,44 @@ module.exports = (app) => {
                 })
             }
         })
+
+    router.get('/api/device', (req, res) => {
+        if (req.session.user == null) {
+            res.redirect('/');
+        } else {
+            var user = req.session.user.user
+            DM.getDevice(user, (err, devices) => {
+                res.json(devices)
+            })
+        }
+    })
+
+    router.route('/register')
+        .get((req, res) => {
+            if (req.session.user == null) {
+                res.redirect('/');
+            } else {
+                var user = req.session.user.user
+                DM.getDevice(user, (err, devices) => {
+                    res.render('addDevice', {
+                        title: 'Register Device',
+                        dvc: devices
+                    })
+                })
+            }
+        })
         .post((req, res) => {
-            console.log('POST DEVICE')
             DM.addDevice({
                 device_name: req.body['device_name'],
                 role: req.body['role'],
                 description: req.body['description'],
-                user: req.session.user.user
+                user: req.session.user.user,
+                date: new Date().toLocaleString()
             }, (err) => {
                 if (err) {
                     res.status(400).send(err);
                 } else {
+                    logger.http('User %s has register the device', req.session.user.user)
                     res.status(200).send('ok');
                 }
             })
@@ -152,6 +183,7 @@ module.exports = (app) => {
     router.post('/delete', function (req, res) {
         AM.deleteAccount(req.session.user._id, function (e, obj) {
             if (!e) {
+                logger.http('User %s has deleted the account', req.session.user.user)
                 res.clearCookie('login');
                 req.session.destroy(function (e) { res.status(200).send('ok'); });
             } else {
