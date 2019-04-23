@@ -26,8 +26,8 @@ $(document).ready(function () {
     $('#name-tf').focus();
 
     // customize the account settings form //
-    $('#register-form h2').text('Register Device');
-    $('#register-form #sub').text('Register your device.');
+    $('#register-form h2').text('Device Setting');
+    $('#register-form #sub').text('Here are the current settings for your device.');
     $('#id-tf').attr('disabled', 'disabled');
     $('#name-tf').attr('disabled', 'disabled');
     $('#register-form-btn1').html('Cancel');

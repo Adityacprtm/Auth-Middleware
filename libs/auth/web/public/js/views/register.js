@@ -20,9 +20,10 @@ $(document).ready(function () {
     $('#name-tf').focus();
 
     // customize the account settings form //
-    $('#register-form h2').text('Register Device');
+    $('#register-form h2').text('Device Registration');
     $('#register-form #sub').text('Register your device.');
-    $('#id-tf').attr('disabled', 'disabled');
+    $('#id-tf').attr('disabled', 'disabled').hide();
+    $('#id-lb').hide()
     $('#register-form-btn1').html('Cancel');
     $('#register-form-btn2').html('Submit');
     $('#register-form-btn2').addClass('btn-primary');
