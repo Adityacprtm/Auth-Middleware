@@ -27,6 +27,8 @@ exports.request = function (payload, callback) {
             if (docs.token) {
                 checkToken(docs.token, (err, reply) => {
                     if (err != null) {
+                        reply.ip = payload.ip
+                        reply.timestamp = payload.timestamp
                         generateToken(reply, (err, token) => {
                             if (err != null) { callback(err, null) }
                             else { callback(null, token) }
@@ -37,7 +39,9 @@ exports.request = function (payload, callback) {
                     }
                 })
             } else {
-                generateToken(reply, (err, token) => {
+                docs.ip = payload.ip
+                docs.timestamp = payload.timestamp
+                generateToken(docs, (err, token) => {
                     if (err != null) { callback(err, null) }
                     else { callback(null, token) }
                 })
@@ -59,25 +63,41 @@ exports.validity = function (token, callback) {
 }
 
 exports.addDevice = function (dataDevice, callback) {
-    var temp
-    temp = uniqid.process()
-    devices.findOne({ device_id: temp }, (err, rep) => {
-        if (err) { callback(err, null) }
+    var tempId
+    devices.findOne({ device_name: dataDevice.device_name, user: dataDevice.user }, function (err, rep) {
         if (rep) {
-            dataDevice['device_id'] = uniqid.process()
+            callback('device-name-taken')
         } else {
-            dataDevice['device_id'] = temp
-        }
-        devices.findOne({ device_name: dataDevice.device_name, user: dataDevice.user }, function (err, rep) {
-            if (rep) {
-                callback('device-name-taken')
-            } else {
+            tempId = uniqid.process()
+            devices.findOne({ device_id: tempId }, (err, rep) => {
+                if (err) { callback(err) }
+                if (rep) {
+                    dataDevice.device_id = uniqid.process()
+                } else {
+                    dataDevice.device_id = tempId
+                }
+                dataDevice.password = uniqid.time()
                 devices.insertOne(dataDevice, (err, r) => {
-                    if (err) { callback(err, null) }
-                    else { callback(null, 'Device Successfully Registered') }
+                    if (err) { callback(err) }
+                    else { callback(null) }
                 })
-            }
-        })
+            })
+        }
+    })
+}
+
+exports.updateDevice = function (newData, callback) {
+    var data = {
+        role: newData.role,
+        description: newData.description
+    }
+    devices.findOneAndUpdate({ device_id: newData.device_id }, { $set: data }, { returnOriginal: false }, callback)
+}
+
+exports.checkId = function (id, callback) {
+    devices.findOne({ device_id: id }, (err, rep) => {
+        if (rep) { callback(null, rep) }
+        else { callback(err, null) }
     })
 }
 
@@ -87,6 +107,14 @@ exports.getDevice = function (user, callback) {
             if (e) callback(e)
             else callback(null, res)
         });
+}
+
+exports.deleteDevice = function (id, user, callback) {
+    if (id != null) {
+        devices.deleteOne({ device_id: id }, callback)
+    } else if (user != null) {
+        devices.deleteOne({ user: user }, callback)
+    }
 }
 
 function checkToken(token, callback) {
@@ -104,6 +132,7 @@ function generateToken(docs, callback) {
         device_id: docs.device_id,
         device_name: docs.device_name,
         timestamp: docs.timestamp,
+        ip: docs.ip,
         role: docs.role
     }
     jwt.sign(payload, SECRET_KEY, { expiresIn: EXP_TIME, issuer: ISSUER }, (err, token) => {

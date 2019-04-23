@@ -153,8 +153,11 @@ exports.getAllRecords = function (callback) {
 		});
 }
 
-exports.deleteAccount = function (id, callback) {
-	accounts.deleteOne({ _id: getObjectId(id) }, callback);
+exports.deleteAccount = function (user, callback) {
+	accounts.deleteOne({ user: user }, (err, o) => {
+		if (err) { callback(err, null) }
+		else (callback(null, o))
+	});
 }
 
 exports.deleteAllAccounts = function (callback) {

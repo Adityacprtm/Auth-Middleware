@@ -26,10 +26,11 @@ $(document).ready(function () {
     $('#register-form-btn1').html('Cancel');
     $('#register-form-btn2').html('Submit');
     $('#register-form-btn2').addClass('btn-primary');
+    $('#register-form-btn3').hide()
 
     // setup the alert that displays when an account is successfully created //
     $('.modal-alert').modal({ show: false, keyboard: false, backdrop: 'static' });
     $('.modal-alert .modal-header h4').text('Account Created!');
-    $('.modal-alert .modal-body p').html('Your device has been registered.</br>Click OK to return to the home page.');
+    $('.modal-alert .modal-body p').html('Your device has been registered.</br>Click OK to return to the device list page.');
 
 })

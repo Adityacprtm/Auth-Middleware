@@ -7,7 +7,6 @@ $(document).ready(function () {
         url: '/api/device',
         dataType: 'json',
         error: function (request, error) {
-            console.log(arguments);
             alert(" Can't do because: " + error);
         },
         success: function (data) {
@@ -20,8 +19,7 @@ $(document).ready(function () {
 
     function handleView() {
         for (let i = 0; i < a.length; i++) {
-            console.log(a[i])
-            $('#card-device').append('<div class="card text-center"><div class="card-body"><h5 class="card-title">' + a[i].device_name + '</h5><p class="card-text"><strong>ID: </strong>' + a[i].device_id + '<br><strong>Pass: </strong>' + a[i].password + '<br><strong>Role: </strong>' + a[i].role + '</p><p class="card-text"><small class="text-muted">Added ' + a[i].date + '</small></p></div></div>')
+            $('#card-device').append('<div class="card text-center"><div class="card-body"><h5 class="card-title"><a href="/device?id=' + a[i].device_id + '">' + a[i].device_name + '</a></h5><p class="card-text"><strong>ID: </strong>' + a[i].device_id + '<br><strong>Pass: </strong>' + a[i].password + '<br><strong>Role: </strong>' + a[i].role + '</p><p class="card-text"><small class="text-muted">Added ' + a[i].date + '</small></p></div></div>')
         }
     }
 })

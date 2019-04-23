@@ -103,7 +103,7 @@ module.exports.start = start = (opts, cb) => {
         proxy: true,
         resave: true,
         saveUninitialized: true,
-        store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort })
+        store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort + '/auth-middleware' })
     }))
     express.use('/', app.controllers.auth_api)
     express.listen(opts.auth, () => {

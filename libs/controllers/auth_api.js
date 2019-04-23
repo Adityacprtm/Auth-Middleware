@@ -13,8 +13,8 @@ module.exports = (app) => {
         .post((req, res) => {
             logger.http('Incoming Device for %s request token from %s ', req.method, req.ip)
             const payload = req.body
-            payload['ip'] = req.ip
-            payload['timestamp'] = Date.now().toString()
+            payload.ip = req.ip
+            payload.timestamp = Date.now().toString()
             DM.request(payload, (err, data) => {
                 if (err != null) {
                     logger.http('Not generate token for %s, %s', req.ip, err)
@@ -145,13 +145,49 @@ module.exports = (app) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
-                var user = req.session.user.user
-                DM.getDevice(user, (err, devices) => {
-                    res.render('device', {
-                        title: 'Device List',
-                        dvc: devices
+                if (req.query.id) {
+                    var id = req.query.id
+                    DM.checkId(id, (err, data) => {
+                        res.render('editDevice', {
+                            title: 'Device',
+                            dvc: data
+                        })
                     })
-                })
+                } else {
+                    var user = req.session.user.user
+                    DM.getDevice(user, (err, devices) => {
+                        res.render('device', {
+                            title: 'Device List',
+                            dvc: devices
+                        })
+                    })
+                }
+            }
+        })
+        .post((req, res) => {
+            if (req.session.user == null) {
+                res.redirect('/');
+            } else {
+                if (req.query.id) {
+                    DM.checkId(req.query.id, (err, o) => {
+                        if (err) {
+                            res.status(400).send('not-found');
+                        } else {
+                            DM.updateDevice({
+                                device_id: req.query.id,
+                                role: req.body['role'],
+                                description: req.body['description']
+                            }, (err, rep) => {
+                                if (err) {
+                                    res.status(400).send('error-updating-account');
+                                } else {
+                                    logger.http('User %s has changed the device data', req.session.user.user)
+                                    res.status(200).send('ok');
+                                }
+                            })
+                        }
+                    })
+                }
             }
         })
 
@@ -177,7 +213,6 @@ module.exports = (app) => {
                 DM.getDevice(user, (err, devices) => {
                     res.render('addDevice', {
                         title: 'Register Device',
-                        dvc: devices
                     })
                 })
             }
@@ -201,15 +236,32 @@ module.exports = (app) => {
 
     /* Delete Account Path */
     router.post('/delete', function (req, res) {
-        AM.deleteAccount(req.session.user._id, function (e, obj) {
-            if (!e) {
-                logger.http('User %s has deleted the account', req.session.user.user)
-                res.clearCookie('login');
-                req.session.destroy(function (e) { res.status(200).send('ok'); });
-            } else {
-                res.status(400).send('record not found');
-            }
-        });
+        if (req.query.id) {
+            DM.deleteDevice(req.query.id, null, (err, obj) => {
+                if (err != null) {
+                    res.status(400).send('record not found');
+                } else {
+                    logger.http('User %s has deleted the device', req.session.user.user)
+                    res.status(200).send('ok');
+                }
+            })
+        } else {
+            AM.deleteAccount(req.session.user.user, function (err, obj) {
+                if (err != null) {
+                    res.status(400).send('record not found');
+                } else {
+                    DM.deleteDevice(null, req.session.user.user, (err, obj) => {
+                        if (err != null) {
+                            res.status(400).send('record not found');
+                        } else {
+                            logger.http('User %s has deleted the account and devices', req.session.user.user)
+                            res.clearCookie('login');
+                            req.session.destroy(function (e) { res.status(200).send('ok'); });
+                        }
+                    })
+                }
+            });
+        }
     });
 
     /* Print All User Path*/
