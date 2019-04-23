@@ -103,6 +103,7 @@ module.exports.start = start = (opts, cb) => {
         proxy: true,
         resave: true,
         saveUninitialized: true,
+        cookie: { maxAge: 86400000 },
         store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort + '/auth-middleware' })
     }))
     express.use('/', app.controllers.auth_api)
