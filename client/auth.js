@@ -17,8 +17,8 @@ var optionsDevice = {
     },
     json: true,
     body: {
-        "device_id": "8zcjutamtee",
-        "password": "jutamtef"
+        "device_id": "2akjutj5nw3",
+        "password": "jutj5nw5"
     }
 };
 

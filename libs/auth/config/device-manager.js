@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const uniqid = require('uniqid')
 const MongoClient = require('mongodb').MongoClient;
 const SECRET_KEY = 'supersecret',
-    EXP_TIME = '3m',
+    EXP_TIME = '10s',
     ISSUER = 'adityacprtm.com',
     DEVICE_DB = 'devices',
     URI = 'mongodb://127.0.0.1:27017/',
@@ -26,13 +26,15 @@ exports.request = function (payload, callback) {
         if (docs) {
             if (docs.token) {
                 checkToken(docs.token, (err, reply) => {
-                    if (err != null) {
-                        reply.ip = payload.ip
-                        reply.timestamp = payload.timestamp
-                        generateToken(reply, (err, token) => {
-                            if (err != null) { callback(err, null) }
-                            else { callback(null, token) }
-                        })
+                    if (err) {
+                        if (err.name == "TokenExpiredError") {
+                            docs.ip = payload.ip
+                            docs.timestamp = payload.timestamp
+                            generateToken(docs, (err, token) => {
+                                if (err != null) { callback(err, null) }
+                                else { callback(null, token) }
+                            })
+                        }
                     }
                     else {
                         callback('Already has token', null)
@@ -47,7 +49,7 @@ exports.request = function (payload, callback) {
                 })
             }
         } else {
-            callback('Device Not Registered, Check ID and Password', null)
+            callback('Device Not Registered', null)
         }
     })
 }
@@ -132,15 +134,14 @@ function generateToken(docs, callback) {
         device_id: docs.device_id,
         device_name: docs.device_name,
         timestamp: docs.timestamp,
-        ip: docs.ip,
         role: docs.role
     }
     jwt.sign(payload, SECRET_KEY, { expiresIn: EXP_TIME, issuer: ISSUER }, (err, token) => {
         if (err) {
             callback(err.name, null)
         } else {
-            payload['token'] = token
-            devices.updateOne({ device_id: payload.device_id }, { $set: payload }, function (err) {
+            docs.token = token
+            devices.updateOne({ device_id: payload.device_id }, { $set: docs }, function (err) {
                 if (err) callback(err, null)
             })
             callback(null, token)

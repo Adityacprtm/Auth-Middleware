@@ -46,7 +46,10 @@ module.exports = (app) => {
                 return Data.findOrCreate(packet.topic, packet.payload)
             } else {
                 logger.mqtt('Client %s does not match the role', client.id)
-                client.disconnecting()
+                client.connack({
+                    returnCode: 2
+                })
+                client.stream.end()
             }
         });
 

@@ -2,7 +2,7 @@ var mqtt = require('mqtt');
 
 var options = {
     port: 1883,
-    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI2d2NqdXRhM3AxaiIsImRldmljZV9uYW1lIjoibm9kZW1jdSIsInRpbWVzdGFtcCI6IjE1NTU5OTMxODg2OTUiLCJyb2xlIjoicHVibGlzaGVyIiwiaWF0IjoxNTU1OTkzMTg4LCJleHAiOjE1NTU5OTMzNjgsImlzcyI6ImFkaXR5YWNwcnRtLmNvbSJ9.8-Zj9xk-akRCSH1VmgpsgJJkea7FF2LNOFBXF_mvs6o',
+    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiJhbm9qdXRoNmo2eiIsImRldmljZV9uYW1lIjoibm9kZW1jdSIsInRpbWVzdGFtcCI6IjE1NTYwMTI0NDM0NjgiLCJpcCI6Ijo6ZmZmZjoxMjcuMC4wLjEiLCJyb2xlIjoic3Vic2NyaWJlciIsImlhdCI6MTU1NjAxMjQ0MywiZXhwIjoxNTU2MDEyNjIzLCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.GYw-L0rSBISVV_efowRGaabNpTp0m45sOcfXwFvHATk',
     password: ''
 }
 var client = mqtt.connect('mqtt://127.0.0.1', options);
@@ -36,6 +36,7 @@ client.on('connect', function () {
 
 client.on('close', (error) => {
     if (error) console.log(error.toString())
+    client.end(true)
 });
 
 client.on('error', (error) => {

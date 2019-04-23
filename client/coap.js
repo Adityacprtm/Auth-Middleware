@@ -1,8 +1,8 @@
 var coap = require('coap')
 
-var topic = 'office'
-var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI2cXNqdXI0eG1wNiIsImRldmljZV9uYW1lIjoicmFzcGJlcnJ5IHBpIiwidGltZXN0YW1wIjoiMTU1NTg2NDAwMjk1OCIsInJvbGUiOiJwdWJsaXNoZXIiLCJpYXQiOjE1NTU4NjQwMDIsImV4cCI6MTU1NTg2NDE4MiwiaXNzIjoiYWRpdHlhY3BydG0uY29tIn0.CJhgrWWQ9tOE8smbwyXcYNei_kHamQu3OMeHdDc4oKo'
 
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiIyYWtqdXRqNW53MyIsImRldmljZV9uYW1lIjoiYXJkdWlubyIsInRpbWVzdGFtcCI6IjE1NTYwMTQ1MDU3NDEiLCJyb2xlIjoic3Vic2NyaWJlciIsImlhdCI6MTU1NjAxNDUwNSwiZXhwIjoxNTU2MDE0Njg1LCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.MeY_F_QoaRPrPNdXW5SNJRFl9l8K2_yJiijI-t3IT1E'
+var topic = 'office'
 var payload = {
     protocol: 'coap',
     timestamp: new Date().getTime().toString(),

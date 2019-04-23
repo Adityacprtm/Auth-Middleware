@@ -1,7 +1,7 @@
 var mqtt = require('mqtt')
 var options = {
     port: 1883,
-    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiJhendqdWpoNjJpaCIsImRldmljZV9uYW1lIjoiYXJkdWlubyIsInRpbWVzdGFtcCI6MTU1NTQwMjcxNDgzMSwicm9sZSI6InN1YnNjcmliZXIiLCJpYXQiOjE1NTU0MDI3MTQsImV4cCI6MTU1NTQwNjMxNCwiaXNzIjoiYWRpdHlhY3BydG0uY29tIn0.7RNUKrvZcY-RR5_HZ53b13MfCiSO9WwehnzRskwJ0gw',
+    username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiIyYWtqdXRqNW53MyIsImRldmljZV9uYW1lIjoiYXJkdWlubyIsInRpbWVzdGFtcCI6IjE1NTYwMTQzMDkwNTkiLCJyb2xlIjoic3Vic2NyaWJlciIsImlhdCI6MTU1NjAxNDMwOSwiZXhwIjoxNTU2MDE0NDg5LCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.ebI9Klmg8uRATd-WEUt0GnETOtI56Y2oX4jh0KPQKR8',
     password: ''
 }
 var client = mqtt.connect('mqtt://127.0.0.1', options)
