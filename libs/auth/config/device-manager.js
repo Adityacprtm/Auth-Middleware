@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken')
 const uniqid = require('uniqid')
 const MongoClient = require('mongodb').MongoClient;
@@ -22,14 +21,13 @@ MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
 })
 
 exports.request = function (payload, callback) {
-    devices.findOne({ device_id: payload.device_id }, function (err, docs) {
+    devices.findOne({ device_id: payload.device_id, password: payload.password }, function (err, docs) {
         if (err) { callback(err, null) }
         if (docs) {
-            docs.timestamp = payload.timestamp
             if (docs.token) {
                 checkToken(docs.token, (err, reply) => {
                     if (err != null) {
-                        generateToken(docs, (err, token) => {
+                        generateToken(reply, (err, token) => {
                             if (err != null) { callback(err, null) }
                             else { callback(null, token) }
                         })
@@ -39,13 +37,13 @@ exports.request = function (payload, callback) {
                     }
                 })
             } else {
-                generateToken(docs, (err, token) => {
+                generateToken(reply, (err, token) => {
                     if (err != null) { callback(err, null) }
                     else { callback(null, token) }
                 })
             }
         } else {
-            callback('Device Not Registered', null)
+            callback('Device Not Registered, Check ID and Password', null)
         }
     })
 }

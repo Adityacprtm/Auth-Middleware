@@ -5,33 +5,47 @@ module.exports = (app) => {
     const AM = require('../auth/config/account-manager')
     const DM = require('../auth/config/device-manager')
 
-    // Device Request
-    router.post('/device/request', (req, res) => {
-        logger.http('Incoming Device for %s request token from %s ', req.method, req.socket.localAddress)
-        const payload = req.body
-        payload['ip'] = req.ip
-        payload['timestamp'] = Date.now().toString()
-        // request token
-        DM.request(payload, (err, data) => {
-            if (err != null) {
-                logger.http('Not generate token for %s, %s', req.socket.localAddress, err)
-                res.format({
-                    'application/json': function () {
-                        res.status(401).send({ message: err });
-                    }
-                })
-            } else {
-                logger.http('Token generated for %s', req.socket.localAddress)
-                res.format({
-                    'application/json': function () {
-                        res.status(200).send({ message: data });
-                    },
-                })
-            }
+    /* 
+    Device Request
+    */
+    /* Device request token */
+    router.route('/device/request')
+        .post((req, res) => {
+            logger.http('Incoming Device for %s request token from %s ', req.method, req.ip)
+            const payload = req.body
+            payload['ip'] = req.ip
+            payload['timestamp'] = Date.now().toString()
+            DM.request(payload, (err, data) => {
+                if (err != null) {
+                    logger.http('Not generate token for %s, %s', req.ip, err)
+                    res.format({
+                        'application/json': function () {
+                            res.status(401).send({ message: err });
+                        }
+                    })
+                } else {
+                    logger.http('Token generated for %s', req.ip)
+                    res.format({
+                        'application/json': function () {
+                            res.status(200).send({ message: data });
+                        },
+                    })
+                }
+            })
         })
-    })
+        .get((req, res) => {
+            logger.http('Incoming Device for %s request token from %s ', req.method, req.ip)
+            res.format({
+                'application/json': function () {
+                    res.status(405).send({ message: 'Method Not Allowed' })
+                }
+            })
+        })
 
-    // User Web Request
+    /*
+    User Web Request
+    */
+    /* Main Path */
     router.route('/')
         .get((req, res) => {
             // check if the user has an auto login key saved in a cookie //
@@ -46,7 +60,7 @@ module.exports = (app) => {
                             res.redirect('/home');
                         });
                     } else {
-                        res.render('login', { title: 'Hello - Please Login To Your Account' });
+                        res.render('login', { title: 'Login' });
                     }
                 });
             }
@@ -71,6 +85,7 @@ module.exports = (app) => {
             });
         })
 
+    /* SignUp path */
     router.route('/signup')
         .get((req, res) => {
             res.render('signup', { title: 'Signup' });
@@ -91,13 +106,14 @@ module.exports = (app) => {
             });
         })
 
+    /* Home path */
     router.route('/home')
         .get((req, res) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
                 res.render('home', {
-                    title: 'Control Panel',
+                    title: 'Dashboard',
                     udata: req.session.user
                 });
             }
@@ -123,6 +139,7 @@ module.exports = (app) => {
             }
         })
 
+    /* Device Path */
     router.route('/device')
         .get((req, res) => {
             if (req.session.user == null) {
@@ -138,6 +155,7 @@ module.exports = (app) => {
             }
         })
 
+    /* Get Device API */
     router.get('/api/device', (req, res) => {
         if (req.session.user == null) {
             res.redirect('/');
@@ -149,6 +167,7 @@ module.exports = (app) => {
         }
     })
 
+    /* Register device path */
     router.route('/register')
         .get((req, res) => {
             if (req.session.user == null) {
@@ -180,6 +199,7 @@ module.exports = (app) => {
             })
         })
 
+    /* Delete Account Path */
     router.post('/delete', function (req, res) {
         AM.deleteAccount(req.session.user._id, function (e, obj) {
             if (!e) {
@@ -192,18 +212,25 @@ module.exports = (app) => {
         });
     });
 
+    /* Print All User Path*/
     router.get('/print', function (req, res) {
-        AM.getAllRecords(function (e, accounts) {
-            res.render('print', { title: 'Account List', accts: accounts });
-        })
+        if (req.session.user.user == 'admin') {
+            AM.getAllRecords(function (e, accounts) {
+                res.render('print', { title: 'Account List', accts: accounts });
+            })
+        } else {
+            res.render('error', { title: 'Forbidden', message: 'forbidden you don\'t have permission to access ' + req.path + ' on this server' })
+        }
     });
 
+    /* LogOut Path */
     router.post('/logout', (req, res) => {
         res.clearCookie('login');
         req.session.destroy(function (e) { res.status(200).send('ok'); });
     })
 
-    router.get('*', function (req, res) { res.render('404', { title: 'Page Not Found' }); });
+    /* Error path handler */
+    router.get('*', function (req, res) { res.render('error', { title: 'Page Not Found', message: 'I\'m sorry, the page or resource you are searching for is currently unavailable.' }); });
 
     return router
 }

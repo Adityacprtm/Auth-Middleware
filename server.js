@@ -7,12 +7,12 @@ express = require('express')()
 session = require('express-session')
 module.exports.app = app = require('http').Server(express)
 io = require('socket.io')(app)
-MongoStore = require('connect-mongo')(session);
+MongoStore = require('connect-mongo')(session)
 consign = require('consign')
 ascoltatori = require('ascoltatori')
 redis = require('redis')
-bodyParser = require('body-parser');
-cookieParser = require('cookie-parser');
+bodyParser = require('body-parser')
+cookieParser = require('cookie-parser')
 app.redis = {}
 
 module.exports.setupAscoltatore = setupAscoltatore = (opts) => {
@@ -64,6 +64,8 @@ module.exports.start = start = (opts, cb) => {
     opts.redisPort || (opts.redisPort = argv['redis-port'])
     opts.redisHost || (opts.redisHost = argv['redis-host'])
     opts.redisDB || (opts.redisDB = argv['redis-db'])
+    opts.mongoPort || (opts.mongoPort = argv['mongo-port'])
+    opts.mongoHost || (opts.mongoHost = argv['mongo-host'])
 
     setup({
         port: opts.redisPort,
@@ -88,12 +90,8 @@ module.exports.start = start = (opts, cb) => {
     });
 
     // Auth Gateway
-    // auth.createServer(app.controllers.auth_api).listen(opts.auth, () => {
-    //     logger.http('HTTP server listening on port %d in %s mode', opts.auth, process.env.NODE_ENV)
-    // });
-
     express.locals.pretty = true;
-    express.set('port', 8080);
+    express.set('port', opts.auth);
     express.set('views', __dirname + '/libs/auth/web/views');
     express.set('view engine', 'pug');
     express.use(cookieParser());
@@ -105,9 +103,8 @@ module.exports.start = start = (opts, cb) => {
         proxy: true,
         resave: true,
         saveUninitialized: true,
-        store: new MongoStore({ url: 'mongodb://127.0.0.1:27017' })
+        store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort })
     }))
-    // express.use(require('./libs/auth/web/routes'))
     express.use('/', app.controllers.auth_api)
     express.listen(opts.auth, () => {
         logger.http('HTTP server listening on port %d in %s mode', opts.auth, process.env.NODE_ENV)
