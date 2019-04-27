@@ -3,7 +3,8 @@ var io = require('socket.io-client')
 request = require('request')
 
 var connect = function (token) {
-    var topic = 'office'
+    console.log(token)
+    var topic = 'topic'
     var socket = io.connect('http://127.0.0.1:' + 3000, {
         reconnect: true,
         query: {
@@ -51,7 +52,7 @@ var checkToken = function (callback) {
         request(optionsDevice, function (error, response, body) {
             if (error) callback(error, null)
             if (response.statusCode == 200 && body) {
-                token = body.message
+                token = body
                 connect(token)
             } else if (response.statusCode == 401) {
                 data = body.message

@@ -27,7 +27,7 @@ module.exports = (app) => {
                     logger.http('Token generated for %s', req.ip)
                     res.format({
                         'application/json': function () {
-                            res.status(200).send({ message: data });
+                            res.status(200).send(data);
                         },
                     })
                 }
