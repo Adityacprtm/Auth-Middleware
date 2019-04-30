@@ -64,7 +64,8 @@ var checkToken = function (callback) {
         request(optionsDevice, function (error, response, body) {
             if (error) callback(error, null)
             if (response.statusCode == 200 && body) {
-                token = body.message
+                token = body
+                console.log(token)
                 connect(token)
             } else if (response.statusCode == 401) {
                 data = body.message

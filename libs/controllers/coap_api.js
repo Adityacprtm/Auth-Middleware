@@ -23,8 +23,8 @@ module.exports = (app) => {
 
             modUrl = req.url.split('?')[0]
             topic = /^\/r\/(.+)$/.exec(modUrl)[1]
-            token = url.parse(req.url, true).query.token;
-            // logger.coap('Client from %s Connecting . . .', req.rsinfo.address)
+            // token = url.parse(req.url, true).query.token
+            token = JSON.parse(req.payload).token
             DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
@@ -36,7 +36,9 @@ module.exports = (app) => {
                     authorized = reply.status
                     if (authorized) {
                         if (reply.role == 'publisher') {
-                            Data.findOrCreate(topic, req.payload)
+                            var payload = JSON.parse(req.payload)
+                            delete payload.token
+                            Data.findOrCreate(topic, payload)
                             logger.coap('Incoming %s request from %s for topic %s ', req.method, req.rsinfo.address, topic)
                             sendResponse('2.01', {
                                 message: 'Created'

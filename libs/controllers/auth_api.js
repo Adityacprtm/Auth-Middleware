@@ -20,7 +20,7 @@ module.exports = (app) => {
                     logger.http('Not generate token for %s, %s', req.ip, err)
                     res.format({
                         'application/json': function () {
-                            res.status(401).send({ message: err });
+                            res.status(401).send(err);
                         }
                     })
                 } else {
