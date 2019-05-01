@@ -4,7 +4,7 @@ request = require('request')
 
 var connect = function (token) {
     console.log(token)
-    var topic = 'topic'
+    var topic = 'home'
     var socket = io.connect('http://127.0.0.1:' + 3000, {
         reconnect: true,
         query: {
@@ -55,8 +55,9 @@ var checkToken = function (callback) {
                 token = body
                 connect(token)
             } else if (response.statusCode == 401) {
-                data = body.message
+                data = body
                 console.log(data)
+                setTimeout(function () { console.log("Wait 10 seconds"); checkToken(); }, 10000)
             }
         });
     }

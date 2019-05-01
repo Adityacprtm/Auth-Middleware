@@ -35,7 +35,7 @@ var connect = function (token) {
                 unit: "string"
             }
         }
-        client.publish(topic, JSON.stringify(payload), [1]);
+        client.publish(topic, JSON.stringify(payload), {qos:1});
         console.log('Message Sent ' + topic);
     }, 5000);
 
@@ -70,11 +70,12 @@ var checkToken = function (callback) {
         request(optionsDevice, function (error, response, body) {
             if (error) callback(error, null)
             if (response.statusCode == 200 && body) {
-                token = body.message
+                token = body
                 connect(token)
             } else if (response.statusCode == 401) {
-                data = body.message
+                data = body
                 console.log(data)
+                setTimeout(function () { console.log("Wait 10 seconds"); checkToken(); }, 10000)
             }
         });
     }

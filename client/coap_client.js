@@ -4,45 +4,47 @@ coap = require('coap')
 request = require('request')
 
 var connect = function (token) {
-    req = coap.request({
-        host: '127.0.0.1',
-        port: '5683',
-        pathname: '/r/' + topic,
-        query: 'token=' + token,
-        method: 'post'
-    });
+    setInterval(function () {
+        req = coap.request({
+            host: '127.0.0.1',
+            port: '5683',
+            pathname: '/r/' + topic,
+            //query: 'token=' + token,
+            method: 'post'
+        });
 
-    payload = {
-        protocol: 'coap',
-        timestamp: new Date().getTime().toString(),
-        topic: topic,
-        sensor: {
-            tipe: "4325",
-            index: "string",
-            ip: '127.0.0.1',
-            module: "string"
-        },
-        humidity: {
-            value: Math.floor(Date.now() / 1000),
-            unit: "string"
-        },
-        temperature: {
-            value: Math.floor(Date.now() / 1000),
-            unit: "string"
+        payload = {
+            protocol: 'coap',
+            timestamp: new Date().getTime().toString(),
+            topic: topic,
+            token: token,
+            sensor: {
+                tipe: "4325",
+                index: "string",
+                ip: '127.0.0.1',
+                module: "string"
+            },
+            humidity: {
+                value: Math.floor(Date.now() / 1000),
+                unit: "string"
+            },
+            temperature: {
+                value: Math.floor(Date.now() / 1000),
+                unit: "string"
+            }
         }
-    }
-    req.write(JSON.stringify(payload));
-    console.log('Message Sent ' + topic);
+        req.write(JSON.stringify(payload));
+        console.log('Message Sent ' + topic);
 
-    req.on('response', function (res) {
-        res.pipe(process.stdout)
-        res.on('end', function () {
-            process.exit(0)
+        req.on('response', function (res) {
+            res.pipe(process.stdout)
+            res.on('end', function () {
+                process.exit(0)
+            })
         })
-    })
 
-    req.end()
-
+        req.end()
+    }, 10000)
 }
 
 var checkToken = function (callback) {
@@ -68,8 +70,9 @@ var checkToken = function (callback) {
                 console.log(token)
                 connect(token)
             } else if (response.statusCode == 401) {
-                data = body.message
+                data = body
                 console.log(data)
+                setTimeout(function () { console.log("Wait 10 seconds"); checkToken(); }, 10000)
             }
         });
     }
