@@ -1,4 +1,4 @@
-var coap, request, optionsCoAP, client, token, optionsDevice, topic = 'office', payload, req
+var coap, request, optionsCoAP, client, token, optionsDevice, topic = 'home', payload, req
 
 coap = require('coap')
 request = require('request')
@@ -59,8 +59,8 @@ var checkToken = function (callback) {
             },
             json: true,
             body: {
-                "device_id": "anojuth6j6z",
-                "password": "juth6j70"
+                "device_id": "2akjutj5j5l",
+                "password": "jutj5j5m"
             }
         }
         request(optionsDevice, function (error, response, body) {

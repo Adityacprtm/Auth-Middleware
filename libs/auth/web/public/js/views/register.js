@@ -24,6 +24,8 @@ $(document).ready(function () {
     $('#register-form #sub').text('Register your device.');
     $('#id-tf').attr('disabled', 'disabled').hide();
     $('#id-lb').hide()
+    $('#pwd-tf').attr('disabled', 'disabled').hide();
+    $('#pwd-lb').hide()
     $('#register-form-btn1').html('Cancel');
     $('#register-form-btn2').html('Submit');
     $('#register-form-btn2').addClass('btn-primary');

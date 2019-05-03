@@ -4,6 +4,7 @@ block content
     // preset form values if we receive a userdata object //
     - user = typeof(usr) != 'undefined' ? usr : { }
     - device = typeof(dvc) != 'undefined' ? dvc : { }
+    - len = device.length
     // store the userId on the client side in a hidden input field //
     input(type='hidden', value= user._id)#userId
 
@@ -48,7 +49,7 @@ block content
                 .form-group.row
                     label.col-sm-3.col-form-label.col-form-label-sm Username
                     .col-sm-9
-                        input.form-control#user-tf(type='text', name='user', value= user.user).disabled
+                        input.form-control(disabled='', type='text', name='user', value= user.user)
 
                 .form-group.row
                     label.col-sm-3.col-form-label.col-form-label-sm Password
@@ -59,17 +60,20 @@ block content
                     button(type='button')#account-form-btn1.btn.btn-outline-dark
                     button(type='submit')#account-form-btn2.btn.btn-primary
                 br
-                
-                .form-group.row
-                    label.col-sm-3.col-form-label.col-form-label-sm Devices
-                    .col-sm-9
-                        input.form-control#devices-tf(type='text', name='device', value= device.length).disabled
 
-                .form-group.row
-                    label.col-sm-3.col-form-label.col-form-label-sm Topics
-                    .col-sm-9
-                        input.form-control#topics-tf(type='text', name='topic', value= device.length).disabled
-    
+                if user.user != 'admin'
+                    .form-group.row
+                        label.col-sm-3.col-form-label.col-form-label-sm Devices
+                        .col-sm-9
+                            input.form-control(disabled='', type='text', name='device', value= len)
+
+                    .form-group.row
+                        label.col-sm-3.col-form-label.col-form-label-sm Active Topics
+                        .col-sm-9
+                            each dvc in device.length ? device : ['There are no Topics']
+                                if dvc.topic != null
+                                    input.form-control(disabled='', value= dvc.topic)
+
     if user.user == 'admin'
         br
     else

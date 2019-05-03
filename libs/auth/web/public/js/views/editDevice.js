@@ -29,6 +29,7 @@ $(document).ready(function () {
     $('#register-form h2').text('Device Setting');
     $('#register-form #sub').text('Here are the current settings for your device.');
     $('#id-tf').attr('disabled', 'disabled');
+    $('#pwd-tf').attr('disabled', 'disabled');
     $('#name-tf').attr('disabled', 'disabled');
     $('#register-form-btn1').html('Cancel');
     $('#register-form-btn2').html('Update');

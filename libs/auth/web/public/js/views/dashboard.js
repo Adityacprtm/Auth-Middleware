@@ -33,7 +33,7 @@ $(document).ready(function () {
                 } else {
                     topic = "No Topic"
                 }
-                $('#card-device').append('<div class="card"> <div class="card-body"> <h5 class="card-title text-center"><a href="/device?id=' + a[i].device_id + '">' + a[i].device_name.toUpperCase() + '</a></h5> <hr> <div class="row card-text"> <div class="col font-weight-bold">Device ID</div><div class="col">' + a[i].device_id + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Device Password</div><div class="col">' + a[i].password + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Role</div><div class="col">' + a[i].role + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Topic</div><div class="col">' + topic + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Description</div><div class="col">' + a[i].description + '</div></div><hr> <p class="card-text text-center"><small class="text-muted">Added ' + a[i].date + '</small></p></div></div>')
+                $('#card-device').append('<div class="card"> <div class="card-body"> <h5 class="card-title text-center"><a href="/device?id=' + a[i].device_id + '">' + a[i].device_name.toUpperCase() + '</a></h5> <hr> <div class="row card-text"> <div class="col font-weight-bold">Device ID</div><div class="col">' + a[i].device_id + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Device Password</div><div class="col">' + a[i].password + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Role</div><div class="col">' + a[i].role + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Active Topic</div><div class="col">' + topic + '</div></div><br><div class="row card-text"> <div class="col font-weight-bold">Description</div><div class="col">' + a[i].description + '</div></div><hr> <p class="card-text text-center"><small class="text-muted">Added ' + a[i].date + '</small></p></div></div>')
             }
         }
     }
@@ -63,9 +63,6 @@ $(document).ready(function () {
 
     // customize the account settings form //
     $('#account-form #sub').text('Here are the current settings for your account.');
-    $('#devices-tf').attr('disabled', 'disabled');
-    $('#topics-tf').attr('disabled', 'disabled');
-    $('#user-tf').attr('disabled', 'disabled');
     $('#account-form-btn1').html('Delete');
     $('#account-form-btn1').removeClass('btn-outline-dark');
     $('#account-form-btn1').addClass('btn-danger');

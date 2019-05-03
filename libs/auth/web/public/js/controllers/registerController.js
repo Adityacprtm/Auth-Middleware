@@ -7,7 +7,7 @@ function RegisterController() {
     $('#register-form-btn1').click(function () { window.location.href = '/device'; });
 
     // redirect to homepage on new account creation, add short delay so user can read alert window //
-    $('.modal-alert #ok').click(function () { setTimeout(function () { window.location.href = '/dashboard'; }, 300) });
+    $('.modal-alert #ok').click(function () { setTimeout(function () { window.location.href = '/device'; }, 300) });
 
     // confirm device deletion //
     $('#register-form-btn3').click(function () { $('.modal-confirm').modal('show') });
@@ -60,8 +60,8 @@ function RegisterController() {
         $('.modal-alert .modal-header h4').text('Success!');
         $('.modal-alert .modal-body p').html(msg);
         $('.modal-alert').modal('show');
-        $('.modal-alert button').click(function () { window.location.href = '/dashboard'; })
-        setTimeout(function () { window.location.href = '/dashboard'; }, 3000);
+        $('.modal-alert button').click(function () { window.location.href = '/'; })
+        setTimeout(function () { window.location.href = '/'; }, 3000);
     }
 }
 
@@ -70,6 +70,6 @@ RegisterController.prototype.onUpdateSuccess = function () {
     $('.modal-alert .modal-header h4').text('Success!');
     $('.modal-alert .modal-body p').html('Your device has been updated.');
     $('.modal-alert').modal('show');
-    $('.modal-alert button').click(function () { window.location.href = '/'; })
-	setTimeout(function () { window.location.href = '/'; }, 3000);
+    $('.modal-alert button').click(function () { window.location.href = '/device'; })
+	setTimeout(function () { window.location.href = '/device'; }, 3000);
 }

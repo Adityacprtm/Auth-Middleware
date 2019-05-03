@@ -24,7 +24,8 @@ module.exports = (app) => {
                     })
                 } else {
                     authorized = reply.status
-                    client.role = reply.role
+                    client.role = reply.data.role
+                    client.device_id = reply.data.device_id
                     if (authorized) {
                         client.connack({
                             returnCode: 0
@@ -46,6 +47,7 @@ module.exports = (app) => {
                 if (packet.qos == 1) {
                     client.puback({ messageId: packet.messageId })
                 }
+                DM.saveTopic(client.device_id, packet.topic)
                 return Data.findOrCreate(packet.topic, packet.payload)
             } else {
                 logger.mqtt('Client %s does not match the role', client.id)
@@ -117,17 +119,20 @@ module.exports = (app) => {
 
         client.on('disconnect', () => {
             logger.mqtt('Client %s has disconnected', client.id)
+            DM.deleteTopic(client.device_id)
             client.stream.end()
         });
 
         client.on('error', (error) => {
             logger.error('Client %s got an error : %s', 'ERROR', error)
+            DM.deleteTopic(client.device_id)
             client.stream.end()
         });
 
         client.on('close', (error) => {
             if (error) logger.error(error)
             logger.mqtt('Client %s has closed connection', client.id)
+            DM.deleteTopic(client.device_id)
             delete self.clients[client.id]
         });
 

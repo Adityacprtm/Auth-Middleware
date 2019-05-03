@@ -15,7 +15,7 @@ function RegisterValidator() {
     }
 
     this.validateRole = function (s) {
-        if (s.toLowerCase() === 'publisher' || s.toLowerCase() === 'subscriber') {
+        if (s != null) {
             return true;
         } else {
             return false;

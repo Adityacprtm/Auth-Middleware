@@ -35,9 +35,10 @@ module.exports = (app) => {
                 } else {
                     authorized = reply.status
                     if (authorized) {
-                        if (reply.role == 'publisher') {
+                        if (reply.data.role == 'publisher') {
                             var payload = JSON.parse(req.payload)
                             delete payload.token
+                            DM.saveTopic(reply.data.device_id, topic)
                             Data.findOrCreate(topic, payload)
                             logger.coap('Incoming %s request from %s for topic %s ', req.method, req.rsinfo.address, topic)
                             sendResponse('2.01', {

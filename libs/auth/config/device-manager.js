@@ -59,7 +59,7 @@ exports.validity = function (token, callback) {
         if (err != null) {
             callback(err, { 'status': false })
         } else {
-            callback(null, { 'status': true, 'role': reply.role })
+            callback(null, { 'status': true, 'data': reply })
         }
     })
 }
@@ -117,6 +117,14 @@ exports.deleteDevice = function (id, user, callback) {
     } else if (user != null) {
         devices.deleteOne({ user: user }, callback)
     }
+}
+
+exports.saveTopic = function (device_id, topic) {
+    devices.findOneAndUpdate({ device_id: device_id }, { $set: { topic: topic } }, { returnOriginal: false })
+}
+
+exports.deleteTopic = function (device_id) {
+    devices.findOneAndUpdate({ device_id: device_id }, { $set: { topic: null } }, { returnOriginal: false })
 }
 
 function checkToken(token, callback) {
