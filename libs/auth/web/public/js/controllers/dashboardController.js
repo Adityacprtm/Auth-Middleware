@@ -12,10 +12,10 @@ function DashboardController() {
 	// handle account deletion //
 	$('.modal-confirm .submit').click(function () { that.deleteAccount(); });
 
-    $('#btn-device').click(function () { window.location.href = '/device'; });
-    
+	$('#btn-device').click(function () { window.location.href = '/device'; });
+
 	$('#btn-add-device').click(function () { window.location.href = '/register'; });
-	
+
 	$('#btn-print').click(function () { window.location.href = '/print'; });
 
 	this.deleteAccount = function () {
@@ -63,5 +63,6 @@ DashboardController.prototype.onUpdateSuccess = function () {
 	$('.modal-alert .modal-header h4').text('Success!');
 	$('.modal-alert .modal-body p').html('Your account has been updated.');
 	$('.modal-alert').modal('show');
-	$('.modal-alert button').off('click');
+	$('.modal-alert button').click(function () { window.location.href = '/'; })
+	setTimeout(function () { window.location.href = '/'; }, 3000);
 }

@@ -71,16 +71,11 @@ module.exports = (app) => {
                     res.status(400).send(e);
                 } else {
                     req.session.user = o;
-                    if (req.body['remember-me'] == 'false') {
+                    AM.generateLoginKey(o.user, req.ip, function (key) {
                         logger.http('User %s has login', req.session.user.user)
+                        res.cookie('login', key, { maxAge: 900000 });
                         res.status(200).send(o);
-                    } else {
-                        AM.generateLoginKey(o.user, req.ip, function (key) {
-                            logger.http('User %s has login', req.session.user.user)
-                            res.cookie('login', key, { maxAge: 900000 });
-                            res.status(200).send(o);
-                        });
-                    }
+                    });
                 }
             });
         })
@@ -237,7 +232,7 @@ module.exports = (app) => {
             })
         })
 
-    /* Delete Account Path */
+    /* Delete Path */
     router.post('/delete', function (req, res) {
         if (req.query.id) {
             DM.deleteDevice(req.query.id, null, (err, obj) => {

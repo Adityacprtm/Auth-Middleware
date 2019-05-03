@@ -69,27 +69,6 @@ exports.validateLoginKey = function (cookie, ipAddress, callback) {
 	accounts.findOne({ cookie: cookie, ip: ipAddress }, callback);
 }
 
-exports.generatePasswordKey = function (email, ipAddress, callback) {
-	let passKey = guid();
-	accounts.findOneAndUpdate({ email: email }, {
-		$set: {
-			ip: ipAddress,
-			passKey: passKey
-		}, $unset: { cookie: '' }
-	}, { returnOriginal: false }, function (e, o) {
-		if (o.value != null) {
-			callback(null, o.value);
-		} else {
-			callback(e || 'account not found');
-		}
-	});
-}
-
-exports.validatePasswordKey = function (passKey, ipAddress, callback) {
-	// ensure the passKey maps to the user's last recorded ip address //
-	accounts.findOne({ passKey: passKey, ip: ipAddress }, callback);
-}
-
 /*
 	record insertion, update & deletion methods
 */
@@ -134,13 +113,6 @@ exports.updateAccount = function (newData, callback) {
 	}
 }
 
-exports.updatePassword = function (passKey, newPass, callback) {
-	saltAndHash(newPass, function (hash) {
-		newPass = hash;
-		accounts.findOneAndUpdate({ passKey: passKey }, { $set: { pass: newPass }, $unset: { passKey: '' } }, { returnOriginal: false }, callback);
-	});
-}
-
 /*
 	account lookup methods
 */
@@ -158,10 +130,6 @@ exports.deleteAccount = function (user, callback) {
 		if (err) { callback(err, null) }
 		else (callback(null, o))
 	});
-}
-
-exports.deleteAllAccounts = function (callback) {
-	accounts.deleteMany({}, callback);
 }
 
 /*
@@ -195,11 +163,5 @@ var validatePassword = function (plainPass, hashedPass, callback) {
 
 var getObjectId = function (id) {
 	return new require('mongodb').ObjectID(id);
-}
-
-var listIndexes = function () {
-	accounts.indexes(null, function (e, indexes) {
-		for (var i = 0; i < indexes.length; i++) console.log('index:', i, indexes[i]);
-	});
 }
 
