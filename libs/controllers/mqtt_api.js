@@ -43,7 +43,9 @@ module.exports = (app) => {
         client.on('publish', (packet) => {
             if (client.role == 'publisher') {
                 logger.mqtt('Client %s publish a message to %s', client.id, packet.topic, packet.payload)
-                client.puback({ messageId: packet.messageId })
+                if (packet.qos == 1) {
+                    client.puback({ messageId: packet.messageId })
+                }
                 return Data.findOrCreate(packet.topic, packet.payload)
             } else {
                 logger.mqtt('Client %s does not match the role', client.id)

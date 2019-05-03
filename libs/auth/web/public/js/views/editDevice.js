@@ -5,6 +5,7 @@ $(document).ready(function () {
 
     $('#register-form').ajaxForm({
         beforeSubmit: function (formData, jqForm, options) {
+            console.log(formData)
             if (rv.validateForm() == false) {
                 return false;
             } else {

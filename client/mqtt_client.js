@@ -35,7 +35,7 @@ var connect = function (token) {
                 unit: "string"
             }
         }
-        client.publish(topic, JSON.stringify(payload), {qos:1});
+        client.publish(topic, JSON.stringify(payload), { qos: 1 });
         console.log('Message Sent ' + topic);
     }, 5000);
 
@@ -49,9 +49,14 @@ var connect = function (token) {
         client.end(true)
     })
 
+    client.on('message', function (topic, message) {
+        // message is Buffer
+        console.log(message.toString())
+        client.end()
+    })
 }
 
-var checkToken = function (callback) {
+var checkToken = function () {
     if (token) {
         connect(token)
     } else {
@@ -68,14 +73,15 @@ var checkToken = function (callback) {
             }
         }
         request(optionsDevice, function (error, response, body) {
-            if (error) callback(error, null)
+            if (error) console.log(error, null)
             if (response.statusCode == 200 && body) {
                 token = body
                 connect(token)
             } else if (response.statusCode == 401) {
                 data = body
                 console.log(data)
-                setTimeout(function () { console.log("Wait 10 seconds"); checkToken(); }, 10000)
+                console.log("Wait 10 seconds");
+                setTimeout(function () { checkToken(); }, 10000)
             }
         });
     }

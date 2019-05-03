@@ -4,7 +4,7 @@ request = require('request')
 
 var connect = function (token) {
     console.log(token)
-    var topic = 'home'
+    var topic = 'office'
     var socket = io.connect('http://127.0.0.1:' + 3000, {
         reconnect: true,
         query: {
@@ -45,8 +45,8 @@ var checkToken = function (callback) {
             },
             json: true,
             body: {
-                "device_id": "2akjutj5nw3",
-                "password": "jutj5nw5"
+                "device_id": "bdkjv6bj3i9",
+                "password": "jv6bj3ib"
             }
         }
         request(optionsDevice, function (error, response, body) {

@@ -22,7 +22,9 @@ input(type='hidden', value= device._id)#userId
 		.form-group.row
 			label.col-sm-3.col-form-label.col-form-label-sm Role
 			.col-sm-9
-				input.form-control#role-tf(type='text', name='role' value=device.role)
+				select.form-control#role-tf(name='role')
+					option publisher
+					option subscriber
 
 		.form-group.row
 			label.col-sm-3.col-form-label.col-form-label-sm Description
