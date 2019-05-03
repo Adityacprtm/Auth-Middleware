@@ -70,5 +70,6 @@ RegisterController.prototype.onUpdateSuccess = function () {
     $('.modal-alert .modal-header h4').text('Success!');
     $('.modal-alert .modal-body p').html('Your device has been updated.');
     $('.modal-alert').modal('show');
-    $('.modal-alert button').off('click');
+    $('.modal-alert button').click(function () { window.location.href = '/'; })
+	setTimeout(function () { window.location.href = '/'; }, 3000);
 }
