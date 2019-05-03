@@ -57,7 +57,7 @@ module.exports = (app) => {
                     if (o) {
                         AM.autoLogin(o.user, o.pass, function (o) {
                             req.session.user = o;
-                            res.redirect('/home');
+                            res.redirect('/dashboard');
                         });
                     } else {
                         res.render('login', { title: 'Login' });
@@ -106,16 +106,20 @@ module.exports = (app) => {
             });
         })
 
-    /* Home path */
-    router.route('/home')
+    /* Dashboard path */
+    router.route('/dashboard')
         .get((req, res) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
-                res.render('home', {
-                    title: 'Dashboard',
-                    udata: req.session.user
-                });
+                var user = req.session.user.user
+                DM.getDevice(user, (err, devices) => {
+                    res.render('dashboard', {
+                        title: 'Dashboard',
+                        dvc: devices,
+                        usr: req.session.user
+                    })
+                })
             }
         })
         .post((req, res) => {
@@ -148,19 +152,18 @@ module.exports = (app) => {
                 if (req.query.id) {
                     var id = req.query.id
                     DM.checkId(id, (err, data) => {
-                        res.render('editDevice', {
-                            title: 'Device',
-                            dvc: data
-                        })
+                        if (data == null) {
+                            res.status(400);
+                            res.render('error', { title: 'Page Not Found', message: 'I\'m sorry, the page or resource you are searching for is currently unavailable.' });
+                        } else {
+                            res.render('editDevice', {
+                                title: 'Device Update',
+                                dvc: data
+                            })
+                        }
                     })
                 } else {
-                    var user = req.session.user.user
-                    DM.getDevice(user, (err, devices) => {
-                        res.render('device', {
-                            title: 'Device List',
-                            dvc: devices
-                        })
-                    })
+                    res.render('device', { title: 'Devices' })
                 }
             }
         })
@@ -198,7 +201,7 @@ module.exports = (app) => {
         } else {
             var user = req.session.user.user
             DM.getDevice(user, (err, devices) => {
-                res.json(devices)
+                res.json({ user: user, dvc: devices })
             })
         }
     })

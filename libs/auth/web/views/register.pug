@@ -1,6 +1,4 @@
-// preset form values if we receive a userdata object //
 - device = typeof(dvc) != 'undefined' ? dvc : { }
-// store the userId on the client side in a hidden input field //
 input(type='hidden', value= device._id)#userId
 
 #register-form-container.center-vertical
@@ -34,9 +32,7 @@ input(type='hidden', value= device._id)#userId
 		hr
 		.form-buttons
 			button(type='button')#register-form-btn1.btn.btn-outline-dark
-			button(type='submit')#register-form-btn3.btn.btn-outline-dark
 			button(type='submit')#register-form-btn2.btn.btn-primary
-
-// display form errors in a custom modal window //
+			button(type='button')#register-form-btn3.btn.btn-outline-dark
 
 include modals/form-errors

@@ -5,7 +5,6 @@ $(document).ready(function () {
 
     $('#register-form').ajaxForm({
         beforeSubmit: function (formData, jqForm, options) {
-            console.log(formData)
             if (rv.validateForm() == false) {
                 return false;
             } else {
@@ -24,7 +23,7 @@ $(document).ready(function () {
         }
     });
 
-    $('#name-tf').focus();
+    // $('#name-tf').focus();
 
     // customize the account settings form //
     $('#register-form h2').text('Device Setting');
@@ -38,13 +37,7 @@ $(document).ready(function () {
     $('#register-form-btn3').removeClass('btn-outline-dark');
     $('#register-form-btn3').addClass('btn-danger');
 
-    // setup the alert that displays when an account is successfully created //
-    $('.modal-alert').modal({ show: false, keyboard: false, backdrop: 'static' });
-    $('.modal-alert .modal-header h4').text('Device Created!');
-    $('.modal-alert .modal-body p').html('Your device has been registered.</br>Click OK to return to the device list page.');
-
     // setup the confirm window that displays when the user chooses to delete their account //
-
     $('.modal-confirm').modal({ show: false, keyboard: true, backdrop: true });
     $('.modal-confirm .modal-header h4').text('Delete Device');
     $('.modal-confirm .modal-body p').html('Are you sure you want to delete your device?');

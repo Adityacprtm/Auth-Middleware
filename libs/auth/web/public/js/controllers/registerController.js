@@ -7,18 +7,18 @@ function RegisterController() {
     $('#register-form-btn1').click(function () { window.location.href = '/device'; });
 
     // redirect to homepage on new account creation, add short delay so user can read alert window //
-    $('.modal-alert #ok').click(function () { setTimeout(function () { window.location.href = '/device'; }, 300) });
+    $('.modal-alert #ok').click(function () { setTimeout(function () { window.location.href = '/dashboard'; }, 300) });
 
-    // confirm account deletion //
+    // confirm device deletion //
     $('#register-form-btn3').click(function () { $('.modal-confirm').modal('show') });
 
-    // handle account deletion //
+    // handle device deletion //
     $('.modal-confirm .submit').click(function () { that.deleteDevice(); });
 
     // 
     $('#btn-logout').click(function () { that.attemptLogout(); });
 
-    $('#btn-account').click(function () { window.location.href = '/home'; });
+    $('#btn-dashboard').click(function () { window.location.href = '/dashboard'; });
 
     $('#btn-add-device').click(function () { window.location.href = '/register'; });
 
@@ -60,8 +60,8 @@ function RegisterController() {
         $('.modal-alert .modal-header h4').text('Success!');
         $('.modal-alert .modal-body p').html(msg);
         $('.modal-alert').modal('show');
-        $('.modal-alert button').click(function () { window.location.href = '/device'; })
-        setTimeout(function () { window.location.href = '/device'; }, 3000);
+        $('.modal-alert button').click(function () { window.location.href = '/dashboard'; })
+        setTimeout(function () { window.location.href = '/dashboard'; }, 3000);
     }
 }
 

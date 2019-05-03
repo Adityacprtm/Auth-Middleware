@@ -1,7 +1,4 @@
-
-// preset form values if we receive a userdata object //
 - user = typeof(udata) != 'undefined' ? udata : { }
-// store the userId on the client side in a hidden input field //
 input(type='hidden', value= user._id)#userId
 
 #account-form-container.center-vertical
@@ -35,6 +32,9 @@ input(type='hidden', value= user._id)#userId
 			button(type='button')#account-form-btn1.btn.btn-outline-dark
 			button(type='submit')#account-form-btn2.btn.btn-primary
 
-// display form errors in a custom modal window //
+		hr
+		.btm-copyright#footer
+			| Copyright &#169; 2019 
+			a#link(target="_blank", href='https://adityacprtm.com')  Adityacprtm.com
 
 include modals/form-errors

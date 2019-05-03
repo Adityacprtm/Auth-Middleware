@@ -4,25 +4,23 @@ block content
 
     nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
         .container
-            a.navbar-brand(href='/home') Dashboard
-            .collapse.navbar-collapse.justify-content-end
+            a.navbar-brand(href='/dashboard') Dashboard
+            button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavAltMarkup', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
+                span.navbar-toggler-icon
+            .collapse.navbar-collapse.justify-content-end#navbarNavAltMarkup
                 .navbar-nav
                     button.btn.navbar-btn.btn-outline-danger#btn-logout Sign Out
-                    button.btn.navbar-btn.btn-outline-primary#btn-account My Account
                     button.btn.navbar-btn.btn-outline-success#btn-add-device Add Device
+                    button.btn.navbar-btn.btn-outline-primary#btn-dashboard Dashboard
 
     .container
         .page-header
             br
-            h5#page-header List Your Devices 
+            h3#page-header List Your Devices 
             hr
         .card-columns
             #card-device
 
-
-    include modals/alert
-
 block scripts
     script(src='/js/views/device.js')
-    script(src='/js/controllers/registerController.js')
-    script(src='/js/form-validators/registerValidator.js')
+    script(src='/js/controllers/deviceController.js')

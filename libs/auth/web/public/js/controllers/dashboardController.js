@@ -1,5 +1,5 @@
 
-function HomeController() {
+function DashboardController() {
 	// bind event listeners to button clicks //
 	var that = this;
 
@@ -12,9 +12,11 @@ function HomeController() {
 	// handle account deletion //
 	$('.modal-confirm .submit').click(function () { that.deleteAccount(); });
 
-	$('#btn-device').click(function () { window.location.href = '/device'; });
-
-	$('#btn-account').click(function () { window.location.href = '/home'; });
+    $('#btn-device').click(function () { window.location.href = '/device'; });
+    
+	$('#btn-add-device').click(function () { window.location.href = '/register'; });
+	
+	$('#btn-print').click(function () { window.location.href = '/print'; });
 
 	this.deleteAccount = function () {
 		$('.modal-confirm').modal('hide');
@@ -56,7 +58,7 @@ function HomeController() {
 	}
 }
 
-HomeController.prototype.onUpdateSuccess = function () {
+DashboardController.prototype.onUpdateSuccess = function () {
 	$('.modal-alert').modal({ show: false, keyboard: true, backdrop: true });
 	$('.modal-alert .modal-header h4').text('Success!');
 	$('.modal-alert .modal-body p').html('Your account has been updated.');
