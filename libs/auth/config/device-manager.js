@@ -72,15 +72,15 @@ exports.addDevice = function (dataDevice, callback) {
         if (rep) {
             callback('device-name-taken')
         } else {
-            tempId = uniqid.process()
+            tempId = hashing(dataDevice.device_name, Date.now())
             devices.findOne({ device_id: tempId }, (err, rep) => {
                 if (err) { callback(err) }
                 if (rep) {
-                    dataDevice.device_id = uniqid.process()
+                    dataDevice.device_id = hashing(dataDevice.device_name, Date.now())
                 } else {
                     dataDevice.device_id = tempId
                 }
-                dataDevice.password = uniqid.time()
+                dataDevice.password = hashing(dataDevice.user, Date.now())
                 dataDevice.key = generateKey().toString('hex')
                 dataDevice.iv = generateIv().toString('hex')
                 devices.insertOne(dataDevice, (err, r) => {
@@ -94,17 +94,10 @@ exports.addDevice = function (dataDevice, callback) {
 
 exports.updateDevice = function (newData, callback) {
     var data = {
-        device_name: newData.device_name,
         role: newData.role,
         description: newData.description
     }
-    devices.findOne({ device_name: newData.device_name, user: newData.user }, function (err, rep) {
-        if (rep) {
-            callback('device-name-taken')
-        } else {
-            devices.findOneAndUpdate({ device_id: newData.device_id }, { $set: data }, { returnOriginal: false }, callback)
-        }
-    })
+    devices.findOneAndUpdate({ device_id: newData.device_id }, { $set: data }, { returnOriginal: false }, callback)
 }
 
 exports.checkId = function (id, callback) {
@@ -136,6 +129,10 @@ exports.saveTopic = function (device_id, topic) {
 
 exports.deleteTopic = function (device_id) {
     devices.findOneAndUpdate({ device_id: device_id }, { $set: { topic: null } }, { returnOriginal: false })
+}
+
+function hashing(str, timestamp) {
+    return crypto.createHash('sha256').update(str + timestamp).digest('hex');
 }
 
 function generateKey() {

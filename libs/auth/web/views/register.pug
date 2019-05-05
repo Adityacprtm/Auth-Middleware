@@ -11,11 +11,13 @@ input(type='hidden', value= device._id)#userId
 			label.col-sm-4.col-form-label.col-form-label-sm#id-lb Device ID
 			.col-sm-7
 				input.form-control#id-tf(type='text', name='device_id', value=device.device_id)
+				//textarea#id-tf.form-control(style='resize: none;', name='device_id', disabled='') #{device.device_id}
 		
 		.form-group.row
 			label.col-sm-4.col-form-label.col-form-label-sm#pwd-lb Device Password
 			.col-sm-7
 				input.form-control#pwd-tf(type='text', name='device_password', value=device.password)
+				//textarea#pwd-tf.form-control(style='resize: none;', name='device_pwd', disabled='') #{device.password}
 		
 		.form-group.row
 			label.col-sm-4.col-form-label.col-form-label-sm#key-lb Key

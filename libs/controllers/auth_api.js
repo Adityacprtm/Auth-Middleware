@@ -173,10 +173,8 @@ module.exports = (app) => {
                         } else {
                             DM.updateDevice({
                                 device_id: req.query.id,
-                                user: req.session.user.user,
                                 role: req.body['role'],
-                                description: req.body['description'],
-                                device_name: req.body['device_name']
+                                description: req.body['description']
                             }, (err, rep) => {
                                 if (err) {
                                     res.status(400).send(err);
