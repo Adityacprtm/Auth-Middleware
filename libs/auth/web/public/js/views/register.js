@@ -22,14 +22,18 @@ $(document).ready(function () {
     // customize the account settings form //
     $('#register-form h2').text('Device Registration');
     $('#register-form #sub').text('Register your device.');
-    $('#id-tf').attr('disabled', 'disabled').hide();
-    $('#id-lb').hide()
-    $('#pwd-tf').attr('disabled', 'disabled').hide();
-    $('#pwd-lb').hide()
+    $('#id-lb').hide();
+    $('#id-tf').hide();
+    $('#pwd-lb').hide();
+    $('#pwd-tf').hide();
+    $('#key-lb').hide();
+    $('#key-tf').hide();
+    $('#iv-lb').hide();
+    $('#iv-tf').hide();
     $('#register-form-btn1').html('Cancel');
     $('#register-form-btn2').html('Submit');
     $('#register-form-btn2').addClass('btn-primary');
-    $('#register-form-btn3').hide()
+    $('#register-form-btn3').hide();
 
     // setup the alert that displays when an account is successfully created //
     $('.modal-alert').modal({ show: false, keyboard: false, backdrop: 'static' });

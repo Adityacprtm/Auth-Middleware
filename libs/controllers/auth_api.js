@@ -173,11 +173,13 @@ module.exports = (app) => {
                         } else {
                             DM.updateDevice({
                                 device_id: req.query.id,
+                                user: req.session.user.user,
                                 role: req.body['role'],
-                                description: req.body['description']
+                                description: req.body['description'],
+                                device_name: req.body['device_name']
                             }, (err, rep) => {
                                 if (err) {
-                                    res.status(400).send('error-updating-account');
+                                    res.status(400).send(err);
                                 } else {
                                     logger.http('User %s has changed the device data', req.session.user.user)
                                     res.status(200).send('ok');

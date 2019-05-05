@@ -1,12 +1,14 @@
 const jwt = require('jsonwebtoken')
 const uniqid = require('uniqid')
+const crypto = require('crypto');
 const MongoClient = require('mongodb').MongoClient;
 const SECRET_KEY = 'supersecret',
     EXP_TIME = '1m',
     ISSUER = 'adityacprtm.com',
     DEVICE_DB = 'devices',
     URI = 'mongodb://127.0.0.1:27017/',
-    DB = 'auth-middleware'
+    DB = 'auth-middleware',
+    ALGORITHM = 'aes-128-cbc'
 
 var db, devices;
 MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
@@ -79,6 +81,8 @@ exports.addDevice = function (dataDevice, callback) {
                     dataDevice.device_id = tempId
                 }
                 dataDevice.password = uniqid.time()
+                dataDevice.key = generateKey().toString('hex')
+                dataDevice.iv = generateIv().toString('hex')
                 devices.insertOne(dataDevice, (err, r) => {
                     if (err) { callback(err) }
                     else { callback(null) }
@@ -90,10 +94,17 @@ exports.addDevice = function (dataDevice, callback) {
 
 exports.updateDevice = function (newData, callback) {
     var data = {
+        device_name: newData.device_name,
         role: newData.role,
         description: newData.description
     }
-    devices.findOneAndUpdate({ device_id: newData.device_id }, { $set: data }, { returnOriginal: false }, callback)
+    devices.findOne({ device_name: newData.device_name, user: newData.user }, function (err, rep) {
+        if (rep) {
+            callback('device-name-taken')
+        } else {
+            devices.findOneAndUpdate({ device_id: newData.device_id }, { $set: data }, { returnOriginal: false }, callback)
+        }
+    })
 }
 
 exports.checkId = function (id, callback) {
@@ -125,6 +136,14 @@ exports.saveTopic = function (device_id, topic) {
 
 exports.deleteTopic = function (device_id) {
     devices.findOneAndUpdate({ device_id: device_id }, { $set: { topic: null } }, { returnOriginal: false })
+}
+
+function generateKey() {
+    return crypto.randomBytes(16);
+}
+
+function generateIv() {
+    return crypto.randomBytes(16);
 }
 
 function checkToken(token, callback) {

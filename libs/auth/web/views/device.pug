@@ -16,9 +16,12 @@ block content
     .container
         br
         form.card.card-body.bg-light.shadow
-            h3 List Your Devices 
+            h3#page-header List Your Devices 
             hr
-            .card-deck
+            .card-columns
+    
+    include modals/alert
+    include modals/confirm
 
 block scripts
     script(src='/js/views/device.js')

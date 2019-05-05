@@ -70,9 +70,11 @@ block content
                     .form-group.row
                         label.col-sm-3.col-form-label.col-form-label-sm Active Topics
                         .col-sm-9
-                            each dvc in device.length ? device : ['There are no Topics']
+                            each dvc in device
                                 if dvc.topic != null
                                     input.form-control(disabled='', value= dvc.topic)
+                            else
+                                input.form-control(disabled='', value= 0)
 
     if user.user == 'admin'
         br
@@ -81,9 +83,9 @@ block content
         .container
             br
             form.card.card-body.bg-light.shadow
-                h3 List Your Devices 
+                h3#page-header List Your Devices 
                 hr
-                .card-deck
+                .card-columns
         br
 
     include modals/alert
