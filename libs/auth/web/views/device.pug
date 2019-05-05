@@ -14,12 +14,11 @@ block content
                     button.btn.navbar-btn.btn-outline-primary#btn-dashboard Dashboard
 
     .container
-        .page-header
-            br
-            h3#page-header List Your Devices 
+        br
+        form.card.card-body.bg-light.shadow
+            h3 List Your Devices 
             hr
-        .card-columns
-            #card-device
+            .card-deck
 
 block scripts
     script(src='/js/views/device.js')

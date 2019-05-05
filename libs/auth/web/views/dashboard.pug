@@ -8,7 +8,7 @@ block content
     // store the userId on the client side in a hidden input field //
     input(type='hidden', value= user._id)#userId
 
-    nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
+    nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light.shadow-sm
         .container
             a.navbar-brand(href='/dashboard') Dashboard
             button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavAltMarkup', aria-controls='navbarNav', aria-expanded='false', aria-label='Toggle navigation')
@@ -23,7 +23,7 @@ block content
                         button.btn.navbar-btn.btn-outline-success#btn-add-device Add Device
                         button.btn.navbar-btn.btn-outline-primary#btn-device Devices
 
-    .jumbotron.jumbotron-fluid
+    .jumbotron.jumbotron-fluid.bg-light
         .container
             h1.display-4.text-capitalize#welcome-user Welcome
             p.lead This is your home page
@@ -32,10 +32,10 @@ block content
     .container
         .page-header
             br
-            h3#page-header-acc Your Information Account
-            hr
-            form.card.card-body.bg-light(method='post')#account-form
-                h6#sub
+            form.card.card-body.bg-light.shadow(method='post')#account-form
+                h3 Your Information Account
+                h6 Here are the current settings for your account.
+                hr
                 .form-group.row
                     label.col-sm-3.col-form-label.col-form-label-sm Name
                     .col-sm-9
@@ -60,7 +60,7 @@ block content
                     button(type='button')#account-form-btn1.btn.btn-outline-dark
                     button(type='submit')#account-form-btn2.btn.btn-primary
                 br
-
+                hr
                 if user.user != 'admin'
                     .form-group.row
                         label.col-sm-3.col-form-label.col-form-label-sm Devices
@@ -79,12 +79,11 @@ block content
     else
         br
         .container
-            .page-header
-                br
-                h3#page-header List Your Devices 
+            br
+            form.card.card-body.bg-light.shadow
+                h3 List Your Devices 
                 hr
-            .card-columns
-                #card-device
+                .card-deck
         br
 
     include modals/alert
