@@ -1,13 +1,18 @@
 var mqtt, request, optionsMQTT, client, token, optionsDevice
 
+const crypto = require('crypto')
 mqtt = require('mqtt')
 request = require('request')
+key = "56dbde64c5c46455b0452f1843509138"
+ivs = "06479be67fd222d45254454f6e528892"
+clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
 var connect = function (token) {
     optionsMQTT = {
         port: 1883,
         username: token,
-        password: ''
+        password: '',
+        clientId: clientID
     }
     client = mqtt.connect('mqtt://127.0.0.1', optionsMQTT)
     client.on('connect', function () {
@@ -15,7 +20,7 @@ var connect = function (token) {
     })
 
     setInterval(function () {
-        var topic = 'office'
+        var topic = clientID + '/office'
         var payload = {
             protocol: client.options.protocol,
             timestamp: new Date().getTime().toString(),
@@ -68,14 +73,14 @@ var checkToken = function () {
             },
             json: true,
             body: {
-                "device_id": "anojuth6j6z",
-                "password": "juth6j70"
+                "device_id": "7eadb3ae62640504e1b4f7957d91cf6a43395f1d959a5738adc439902ca69503",
+                "password": "061ed09f094f7a2e5d43b037ec9a908d61d2ff0f424652aa6243b757a5c3d1ab"
             }
         }
         request(optionsDevice, function (error, response, body) {
             if (error) console.log(error, null)
             if (response.statusCode == 200 && body) {
-                token = body
+                token = decrypt(body)
                 connect(token)
             } else if (response.statusCode == 401) {
                 data = body
@@ -85,6 +90,15 @@ var checkToken = function () {
             }
         });
     }
+}
+
+var decrypt = function (cipher) {
+    let iv = Buffer.from(ivs, 'hex');
+    let encryptedText = Buffer.from(cipher, 'hex');
+    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
 checkToken()

@@ -19,7 +19,7 @@ module.exports = (app) => {
                     authorized = reply.status
                     if (authorized) {
                         logger.socket('Client %s has connected', socket.id)
-                        if (reply.role == 'subscriber') {
+                        if (reply.data.role == 'subscriber') {
                             subscriptions = {}
                             socket.on('subscribe', (topic) => {
                                 logger.socket('Client %s subscribe to %s ', socket.id, topic)

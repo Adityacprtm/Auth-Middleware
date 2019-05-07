@@ -1,9 +1,9 @@
 const jwt = require('jsonwebtoken')
 const uniqid = require('uniqid')
-const crypto = require('crypto');
+const crypto = require('crypto')
 const MongoClient = require('mongodb').MongoClient;
 const SECRET_KEY = 'supersecret',
-    EXP_TIME = '1m',
+    EXP_TIME = '30s',
     ISSUER = 'adityacprtm.com',
     DEVICE_DB = 'devices',
     URI = 'mongodb://127.0.0.1:27017/',
@@ -34,7 +34,11 @@ exports.request = function (payload, callback) {
                             docs.timestamp = payload.timestamp
                             generateToken(docs, (err, token) => {
                                 if (err != null) { callback(err, null) }
-                                else { callback(null, token) }
+                                else {
+                                    encrypt(docs.device_id, token, (cipher) => {
+                                        callback(null, cipher)
+                                    })
+                                }
                             })
                         }
                     }
@@ -47,7 +51,11 @@ exports.request = function (payload, callback) {
                 docs.timestamp = payload.timestamp
                 generateToken(docs, (err, token) => {
                     if (err != null) { callback(err, null) }
-                    else { callback(null, token) }
+                    else {
+                        encrypt(docs.device_id, token, (cipher) => {
+                            callback(null, cipher)
+                        })
+                    }
                 })
             }
         } else {
@@ -81,7 +89,7 @@ exports.addDevice = function (dataDevice, callback) {
                     dataDevice.device_id = tempId
                 }
                 dataDevice.password = hashing(dataDevice.user, Date.now())
-                dataDevice.key = generateKey().toString('hex')
+                dataDevice.key = generateKey(dataDevice.password).toString('hex')
                 dataDevice.iv = generateIv().toString('hex')
                 devices.insertOne(dataDevice, (err, r) => {
                     if (err) { callback(err) }
@@ -119,7 +127,7 @@ exports.deleteDevice = function (id, user, callback) {
     if (id != null) {
         devices.deleteOne({ device_id: id }, callback)
     } else if (user != null) {
-        devices.deleteOne({ user: user }, callback)
+        devices.deleteMany({ user: user }, callback)
     }
 }
 
@@ -131,19 +139,51 @@ exports.deleteTopic = function (device_id) {
     devices.findOneAndUpdate({ device_id: device_id }, { $set: { topic: null } }, { returnOriginal: false })
 }
 
-function hashing(str, timestamp) {
-    return crypto.createHash('sha256').update(str + timestamp).digest('hex');
+var decrypt = function (cipher) {
+    let iv = Buffer.from(cipher.iv, 'hex');
+    let encryptedText = Buffer.from(cipher.encryptedData, 'hex');
+    let decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(key), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
-function generateKey() {
+var encrypt = function (id, plain, callback) {
+    var cipher, encrypted
+    devices.findOne({ device_id: id }, function (err, rep) {
+        if (err) console.log(err)
+        if (rep) {
+            cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(rep.key, 'hex'), Buffer.from(rep.iv, 'hex'));
+            encrypted = cipher.update(plain);
+            encrypted = Buffer.concat([encrypted, cipher.final()]).toString('hex');
+            callback(encrypted)
+        }
+    })
+}
+
+var generateSalt = function () {
+    var set = '0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ';
+    var salt = '';
+    for (var i = 0; i < 10; i++) {
+        var p = Math.floor(Math.random() * set.length);
+        salt += set[p];
+    }
+    return salt;
+}
+
+var hashing = function (str, timestamp) {
+    return crypto.createHash('sha256').update(str + '-' + timestamp).digest('hex');
+}
+
+var generateKey = function (password) {
+    return crypto.scryptSync(password, generateSalt(), 16);
+}
+
+var generateIv = function () {
     return crypto.randomBytes(16);
 }
 
-function generateIv() {
-    return crypto.randomBytes(16);
-}
-
-function checkToken(token, callback) {
+var checkToken = function (token, callback) {
     jwt.verify(token, SECRET_KEY, (err, decoded) => {
         if (err) {
             callback(err, null)
@@ -153,7 +193,7 @@ function checkToken(token, callback) {
     })
 }
 
-function generateToken(docs, callback) {
+var generateToken = function (docs, callback) {
     var payload = {
         device_id: docs.device_id,
         device_name: docs.device_name,

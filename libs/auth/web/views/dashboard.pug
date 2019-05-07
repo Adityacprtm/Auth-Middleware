@@ -33,48 +33,51 @@ block content
         .page-header
             br
             form.card.card-body.bg-light.shadow(method='post')#account-form
-                h3 Your Information Account
+                h3
+                    a.text-decoration-none(style='color:black;', data-toggle='collapse', href="#collapseAccount", role='button') Your Information Account 
+                        span.justify-content-end.dropdown-toggle
                 h6 Here are the current settings for your account.
                 hr
-                .form-group.row
-                    label.col-sm-3.col-form-label.col-form-label-sm Name
-                    .col-sm-9
-                        input.form-control#name-tf(type='text', name='name', value= user.name)
-
-                .form-group.row
-                    label.col-sm-3.col-form-label.col-form-label-sm Email
-                    .col-sm-9
-                        input.form-control#email-tf(type='email', name='email', value= user.email)
-
-                .form-group.row
-                    label.col-sm-3.col-form-label.col-form-label-sm Username
-                    .col-sm-9
-                        input.form-control(disabled='', type='text', name='user', value= user.user)
-
-                .form-group.row
-                    label.col-sm-3.col-form-label.col-form-label-sm Password
-                    .col-sm-9
-                        input.form-control#pass-tf(type='password', name='pass', value='')
-
-                .form-buttons
-                    button(type='button')#account-form-btn1.btn.btn-outline-dark
-                    button(type='submit')#account-form-btn2.btn.btn-primary
-                br
-                hr
-                if user.user != 'admin'
+                .collapse.show#collapseAccount
                     .form-group.row
-                        label.col-sm-3.col-form-label.col-form-label-sm Devices
+                        label.col-sm-3.col-form-label.col-form-label-sm Name
                         .col-sm-9
-                            input.form-control(disabled='', type='text', name='device', value= len)
+                            input.form-control#name-tf(type='text', name='name', value= user.name)
 
                     .form-group.row
-                        label.col-sm-3.col-form-label.col-form-label-sm Active Topics
+                        label.col-sm-3.col-form-label.col-form-label-sm Email
                         .col-sm-9
-                            each dvc in device
-                                if dvc.topic != null
-                                    input.form-control(disabled='', value= dvc.topic)
-                            else
-                                input.form-control(disabled='', value= 0)
+                            input.form-control#email-tf(type='email', name='email', value= user.email)
+
+                    .form-group.row
+                        label.col-sm-3.col-form-label.col-form-label-sm Username
+                        .col-sm-9
+                            input.form-control(disabled='', type='text', name='user', value= user.user)
+
+                    .form-group.row
+                        label.col-sm-3.col-form-label.col-form-label-sm Password
+                        .col-sm-9
+                            input.form-control#pass-tf(type='password', name='pass', value='')
+
+                    .form-buttons
+                        button(type='button')#account-form-btn1.btn.btn-outline-dark
+                        button(type='submit')#account-form-btn2.btn.btn-primary
+                    br
+                    hr
+                    if user.user != 'admin'
+                        .form-group.row
+                            label.col-sm-3.col-form-label.col-form-label-sm Devices
+                            .col-sm-9
+                                input.form-control(disabled='', type='text', name='device', value= len)
+
+                        .form-group.row
+                            label.col-sm-3.col-form-label.col-form-label-sm Active Topics
+                            .col-sm-9
+                                each dvc in device
+                                    if dvc.topic != null
+                                        input.form-control(disabled='', value= dvc.topic)
+                                else
+                                    input.form-control(disabled='', value= 0)
 
     if user.user == 'admin'
         br
@@ -83,9 +86,12 @@ block content
         .container
             br
             form.card.card-body.bg-light.shadow
-                h3#page-header List Your Devices 
+                h3#page-header
+                    a.text-decoration-none#page-header(style='color:black;', data-toggle='collapse', href="#collapseDevice", role='button') List Your Devices 
+                        span.badge.badge-secondary.dropdown-toggle #{len}
                 hr
-                .card-columns
+                .collapse#collapseDevice
+                    .card-columns
         br
 
     include modals/alert
