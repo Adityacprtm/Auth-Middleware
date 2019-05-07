@@ -22,6 +22,7 @@ $(document).ready(function () {
     // customize the account settings form //
     $('#register-form h2').text('Device Registration');
     $('#register-form #sub').text('Register your device.');
+    $('#head-collapse').hide();
     $('#id-lb').hide();
     $('#id-tf').hide();
     $('#pwd-lb').hide();

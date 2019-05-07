@@ -2,8 +2,8 @@
 function AccountValidator() {
 	// build array maps of the form inputs & control groups //
 
-	this.formFields = [$('#name-tf'), $('#email-tf'), $('#user-tf'), $('#pass-tf')];
-	this.controlGroups = [$('#name-cg'), $('#email-cg'), $('#user-cg'), $('#pass-cg')];
+	this.formFields = [$('#name-tf'), $('#email-tf'), $('#pass-tf')];
+	this.controlGroups = [$('#name-cg'), $('#email-cg'), $('#pass-cg')];
 
 	// bind the form-error modal window to this controller to display any errors //
 
@@ -57,12 +57,8 @@ AccountValidator.prototype.validateForm = function () {
 	if (this.validateEmail(this.formFields[1].val()) == false) {
 		this.controlGroups[1].addClass('error'); e.push('Please Enter A Valid Email');
 	}
-	if (this.validateName(this.formFields[2].val()) == false) {
+	if (this.validatePassword(this.formFields[2].val()) == false) {
 		this.controlGroups[2].addClass('error');
-		e.push('Please Choose A Username');
-	}
-	if (this.validatePassword(this.formFields[3].val()) == false) {
-		this.controlGroups[3].addClass('error');
 		e.push('Password Should Be At Least 6 Characters');
 	}
 	if (e.length) this.showErrors(e);

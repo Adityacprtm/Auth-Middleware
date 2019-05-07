@@ -95,6 +95,7 @@ exports.addNewAccount = function (newData, callback) {
 }
 
 exports.updateAccount = function (newData, callback) {
+	console.log('asaw')
 	let findOneAndUpdate = function (data) {
 		var o = {
 			name: data.name,
