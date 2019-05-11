@@ -36,10 +36,9 @@ module.exports = (app) => {
                     authorized = reply.status
                     if (authorized) {
                         if (reply.data.role == 'publisher') {
-                            var payload = JSON.parse(req.payload)
-                            delete payload.token
+                            delete req.payload.token
                             DM.saveTopic(reply.data.device_id, topic)
-                            Data.findOrCreate(topic, payload)
+                            Data.findOrCreate(topic, req.payload)
                             logger.coap('Incoming %s request from %s for topic %s ', req.method, req.rsinfo.address, topic)
                             sendResponse('2.01', {
                                 message: 'Created'

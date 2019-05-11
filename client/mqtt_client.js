@@ -1,11 +1,12 @@
-var mqtt, request, optionsMQTT, client, token, optionsDevice
+var optionsMQTT, client, token, optionsDevice
 
 const crypto = require('crypto')
-mqtt = require('mqtt')
-request = require('request')
-key = "56dbde64c5c46455b0452f1843509138"
-ivs = "06479be67fd222d45254454f6e528892"
-clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+var mqtt = require('mqtt')
+var request = require('request')
+var key = "51e5b379584d3faa99f8d8046dfadc28"
+var id = "5fe64b3576f8f17dd614c798fd0a992318d6721e0fd8c3e4f2de79e0abf02af7"
+var pwd = "57b6592674b2bb5697b06026baa8fef87e20a6adcbf4d60e4ea8074c79b22a0c"
+var clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
 var connect = function (token) {
     optionsMQTT = {
@@ -73,8 +74,8 @@ var checkToken = function () {
             },
             json: true,
             body: {
-                "device_id": "7eadb3ae62640504e1b4f7957d91cf6a43395f1d959a5738adc439902ca69503",
-                "password": "061ed09f094f7a2e5d43b037ec9a908d61d2ff0f424652aa6243b757a5c3d1ab"
+                "device_id": id,
+                "password": pwd
             }
         }
         request(optionsDevice, function (error, response, body) {
@@ -93,8 +94,8 @@ var checkToken = function () {
 }
 
 var decrypt = function (cipher) {
-    let iv = Buffer.from(ivs, 'hex');
-    let encryptedText = Buffer.from(cipher, 'hex');
+    let iv = Buffer.from(cipher.iv, 'hex');
+    let encryptedText = Buffer.from(cipher.cipher, 'hex');
     let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), iv);
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);

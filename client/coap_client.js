@@ -1,16 +1,22 @@
-var coap, request, optionsCoAP, client, token, optionsDevice, topic = 'home', payload, req
+var coap, request, key, crypto, token, optionsDevice, topic = 'home', payload, req, id, pwd
 
+crypto = require('crypto')
 coap = require('coap')
 request = require('request')
+key = '048d6b03d40e243dae2f2437900f311a'
+id = "e4838d7e3ee627002cf97ab7de3066857d4509d33fe101afdafb5fda29f3577e"
+pwd = "8c558fef290d83bb7e70a8c011ecebeee14e1293b25dfae9d63250e3141897c3"
+client_id = Math.random().toString(16).substr(2, 8)
 
 var connect = function (token) {
     setInterval(function () {
         req = coap.request({
             host: '127.0.0.1',
             port: '5683',
-            pathname: '/r/' + topic,
+            pathname: '/r/' + client_id + '/' + topic,
             //query: 'token=' + token,
-            method: 'post'
+            method: 'post',
+            confirmable: false
         });
 
         payload = {
@@ -59,15 +65,14 @@ var checkToken = function (callback) {
             },
             json: true,
             body: {
-                "device_id": "2akjutj5j5l",
-                "password": "jutj5j5m"
+                "device_id": id,
+                "password": pwd
             }
         }
         request(optionsDevice, function (error, response, body) {
             if (error) callback(error, null)
             if (response.statusCode == 200 && body) {
-                token = body
-                console.log(token)
+                token = decrypt(body)
                 connect(token)
             } else if (response.statusCode == 401) {
                 data = body
@@ -76,6 +81,15 @@ var checkToken = function (callback) {
             }
         });
     }
+}
+
+var decrypt = function (cipher) {
+    let iv = Buffer.from(cipher.iv, 'hex');
+    let encryptedText = Buffer.from(cipher.cipher, 'hex');
+    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
 }
 
 checkToken()

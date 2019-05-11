@@ -6,7 +6,8 @@ input(type='hidden', value= device._id)#userId
 		h2
 		h6#sub Register your device.
 		hr
-		a.text-decoration-none.dropdown-toggle.btn.btn-primary#head-collapse(data-toggle='collapse', href="#collapseExample", role='button') Security Information 
+		p#head-collapse
+			a.text-decoration-none.dropdown-toggle.btn.btn-primary(data-toggle='collapse', href="#collapseExample", role='button') Security Information 
 		.collapse(id="collapseExample")
 			.form-group.row
 				label.col-sm-4.col-form-label.col-form-label-sm#id-lb Device ID
@@ -25,11 +26,11 @@ input(type='hidden', value= device._id)#userId
 				.col-sm-7
 					input.form-control#key-tf(type='text', name='key', value=device.key)
 
-			.form-group.row
-				label.col-sm-4.col-form-label.col-form-label-sm#iv-lb Initialization Vector
-				.col-sm-7
-					input.form-control#iv-tf(type='text', name='iv', value=device.iv)
-
+			//- .form-group.row
+			//- 	label.col-sm-4.col-form-label.col-form-label-sm#iv-lb Initialization Vector
+			//- 	.col-sm-7
+			//- 		input.form-control#iv-tf(type='text', name='iv', value=device.iv)
+			hr
 		.form-group.row
 			label.col-sm-4.col-form-label.col-form-label-sm Device Name
 			.col-sm-7
