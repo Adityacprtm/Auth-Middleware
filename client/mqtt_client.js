@@ -7,7 +7,7 @@ let key = "c15f2d07f8c3949a822f05dab4837d07"
 let iv = "78b3e8e9a5428b9c197a7826e5d9ce83"
 let id = "a334859eeb658b83f6233ff77a88627bfdfe03bd3b26652b7c36f8005c1f97c3"
 let pwd = "fe24a834f5a1b27361b584514e6de87b2edd4cb419b62c9f4965205bba604de5"
-let clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+let clientID = 'mqttjs_74145d49'
 
 let connect = function (token) {
     optionsMQTT = {
@@ -22,7 +22,7 @@ let connect = function (token) {
     })
 
     setInterval(function () {
-        let topic = 'mqttjs_74145d49/office'
+        let topic = clientID + '/office'
         let payload = {
             protocol: client.options.protocol,
             timestamp: new Date().getTime().toString(),
