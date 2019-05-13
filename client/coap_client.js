@@ -52,7 +52,7 @@ var connect = function (token) {
 
 var checkToken = function () {
     optionsDevice = {
-        url: "http://127.0.0.1:8080/device/request",
+        url: "http://127.0.0.1/device/request",
         method: 'POST',
         headers: {
             'content-type': 'application/json'

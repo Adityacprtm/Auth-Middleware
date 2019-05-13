@@ -1,11 +1,17 @@
 module.exports = (app) => {
     let argv = require('yargs')
         .option({
-            'a': {
-                alias: 'auth',
+            's': {
+                alias: 'https',
                 demand: false,
-                default: 8080,
-                describe: 'The port the auth server will listen to'
+                default: 443,
+                describe: 'The port the https server will listen to'
+            },
+            'a': {
+                alias: 'http',
+                demand: false,
+                default: 80,
+                describe: 'The port the http server will listen to'
             },
             'p': {
                 alias: 'port',

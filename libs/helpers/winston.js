@@ -5,8 +5,9 @@ module.exports = (app) => {
 
     const CustomLevels = {
         levels: {
-            debug: 5,
-            http: 4,
+            debug: 6,
+            http: 5,
+            https: 4,
             coap: 3,
             mqtt: 2,
             socket: 1,
@@ -15,6 +16,7 @@ module.exports = (app) => {
         colors: {
             debug: 'blue',
             http: 'magenta',
+            https: 'gray',
             coap: 'green',
             mqtt: 'cyan',
             socket: 'yellow',

@@ -3,9 +3,10 @@ var optionsMQTT, client, token, optionsDevice
 const crypto = require('crypto')
 var mqtt = require('mqtt')
 var request = require('request')
-var key = "51e5b379584d3faa99f8d8046dfadc28"
-var id = "5fe64b3576f8f17dd614c798fd0a992318d6721e0fd8c3e4f2de79e0abf02af7"
-var pwd = "57b6592674b2bb5697b06026baa8fef87e20a6adcbf4d60e4ea8074c79b22a0c"
+var key = "c15f2d07f8c3949a822f05dab4837d07"
+var iv = "78b3e8e9a5428b9c197a7826e5d9ce83"
+var id = "a334859eeb658b83f6233ff77a88627bfdfe03bd3b26652b7c36f8005c1f97c3"
+var pwd = "fe24a834f5a1b27361b584514e6de87b2edd4cb419b62c9f4965205bba604de5"
 var clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
 var connect = function (token) {
@@ -67,7 +68,7 @@ var checkToken = function () {
         connect(token)
     } else {
         optionsDevice = {
-            url: "http://127.0.0.1:8080/device/request",
+            url: "http://127.0.0.1/device/request",
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
@@ -94,12 +95,17 @@ var checkToken = function () {
 }
 
 var decrypt = function (cipher) {
-    let iv = Buffer.from(cipher.iv, 'hex');
-    let encryptedText = Buffer.from(cipher.cipher, 'hex');
-    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), iv);
+    let encryptedText = Buffer.from(cipher, 'hex');
+    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
 }
 
+var encrypt = function (plain) {
+    var cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+    var encrypted = cipher.update(plain);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return encrypted.toString('hex')
+}
 checkToken()

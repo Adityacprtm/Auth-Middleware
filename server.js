@@ -1,5 +1,5 @@
 let start, configure, app, logger, coap, consign, session, bodyParser, cookieParser,
-    argv, setup, setupAscoltatore, redis, coapServer, MongoStore;
+    argv, setup, setupAscoltatore, redis, coapServer, MongoStore, fs, https;
 
 coap = require('coap')
 mqtt = require('mqtt')
@@ -14,6 +14,12 @@ redis = require('redis')
 bodyParser = require('body-parser')
 cookieParser = require('cookie-parser')
 app.redis = {}
+fs = require('fs')
+https = require('https').createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+}, express)
+
 
 module.exports.setupAscoltatore = setupAscoltatore = (opts) => {
     if (opts == null) {
@@ -59,7 +65,8 @@ module.exports.start = start = (opts, cb) => {
     opts.port || (opts.port = argv['port'])
     opts.coap || (opts.coap = argv['coap'])
     opts.mqtt || (opts.mqtt = argv['mqtt'])
-    opts.auth || (opts.auth = argv['auth'])
+    opts.http || (opts.http = argv['http'])
+    opts.https || (opts.https = argv['https'])
     opts.mqttHost || (opts.mqttHost = argv['mqtt-host'])
     opts.redisPort || (opts.redisPort = argv['redis-port'])
     opts.redisHost || (opts.redisHost = argv['redis-host'])
@@ -89,7 +96,7 @@ module.exports.start = start = (opts, cb) => {
         logger.socket('Websocket listening on port %d in %s mode', opts.port, process.env.NODE_ENV)
     });
 
-    // Auth Gateway
+    // HTTP Gateway
     express.locals.pretty = true;
     express.set('port', opts.auth);
     express.set('views', __dirname + '/libs/auth/web/views');
@@ -107,8 +114,12 @@ module.exports.start = start = (opts, cb) => {
         store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort + '/auth-middleware' })
     }))
     express.use('/', app.controllers.http_api)
-    express.listen(opts.auth, () => {
-        logger.http('HTTP server listening on port %d in %s mode', opts.auth, process.env.NODE_ENV)
+    express.listen(opts.http, () => {
+        logger.http('HTTP server listening on port %d in %s mode', opts.http, process.env.NODE_ENV)
+    })
+    // HTTPS
+    https.listen(opts.https, function () {
+        logger.https('HTTPS server listening on port %d in %s mode', opts.https, process.env.NODE_ENV)
     })
 
     return app
