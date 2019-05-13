@@ -1,5 +1,5 @@
-var request, key, id, pwd, token, optionsDevice, topic = '9d0af761/home'
-var io = require('socket.io-client')
+let request, key, id, pwd, token, optionsDevice, topic = 'mqttjs_74145d49/office'
+let io = require('socket.io-client')
 const crypto = require('crypto')
 request = require('request')
 key = "80aa33c70d02e965486aa32ef4b3911c"
@@ -7,8 +7,8 @@ iv = "c3d117ad733ac0fa24660918c9aa4c1c"
 id = "8d2b0107bd09bb49913969cfd4052f293104c7d7b25571da427588669cad04d9"
 pwd = "436e6bac38abe9a41dce038f74822501ac71d6c8db91f92c89b1c753a9794a55"
 
-var connect = function (token) {
-    var socket = io.connect('http://127.0.0.1:' + 3000, {
+let connect = function (token) {
+    let socket = io.connect('http://127.0.0.1:' + 3000, {
         reconnect: true,
         query: {
             token: token
@@ -36,7 +36,7 @@ var connect = function (token) {
     })
 }
 
-var checkToken = function () {
+let checkToken = function () {
     if (token) {
         connect(token)
     } else {
@@ -68,7 +68,7 @@ var checkToken = function () {
     }
 }
 
-var decrypt = function (cipher) {
+let decrypt = function (cipher) {
     let encryptedText = Buffer.from(cipher, 'hex');
     let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encryptedText);
@@ -76,9 +76,9 @@ var decrypt = function (cipher) {
     return decrypted.toString();
 }
 
-var encrypt = function (plain) {
-    var cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    var encrypted = cipher.update(plain);
+let encrypt = function (plain) {
+    let cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+    let encrypted = cipher.update(plain);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex')
 }

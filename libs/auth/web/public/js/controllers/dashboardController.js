@@ -1,7 +1,7 @@
 
 function DashboardController() {
 	// bind event listeners to button clicks //
-	var that = this;
+	let that = this;
 
 	// handle user logout //
 	$('#btn-logout').click(function () { that.attemptLogout(); });
@@ -20,7 +20,7 @@ function DashboardController() {
 
 	this.deleteAccount = function () {
 		$('.modal-confirm').modal('hide');
-		var that = this;
+		let that = this;
 		$.ajax({
 			url: '/delete',
 			type: 'POST',
@@ -34,7 +34,7 @@ function DashboardController() {
 	}
 
 	this.attemptLogout = function () {
-		var that = this;
+		let that = this;
 		$.ajax({
 			url: '/logout',
 			type: 'POST',

@@ -1,8 +1,8 @@
 
 $(document).ready(function () {
 
-	var av = new AccountValidator();
-	var sc = new SignupController();
+	let av = new AccountValidator();
+	let sc = new SignupController();
 
 	$('#account-form').ajaxForm({
 		beforeSubmit: function (formData, jqForm, options) {

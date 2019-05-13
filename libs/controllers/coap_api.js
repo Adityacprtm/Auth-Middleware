@@ -13,7 +13,7 @@ module.exports = (app) => {
         }
 
         const handlerPost = () => {
-            var modUrl, topic, token, authorized
+            let modUrl, topic, token, authorized
 
             if (/^\/r\/(.+)$/.exec(req.url) === null) {
                 return sendResponse('4.00', {
@@ -63,7 +63,7 @@ module.exports = (app) => {
         }
 
         const handlerGet = () => {
-            var modUrl, topic, token, authorized
+            let modUrl, topic, token, authorized
 
             if (/^\/r\/(.+)$/.exec(req.url) === null) {
                 sendResponse('4.04', {
@@ -89,7 +89,7 @@ module.exports = (app) => {
                     if (authorized) {
                         if (reply.role == 'subscriber') {
                             logger.coap('Incoming %s request from %s for %s ', req.method, req.rsinfo.address, topic)
-                            var handlerObserver = function (payload) {
+                            let handlerObserver = function (payload) {
                                 let listener = function (data) {
                                     try {
                                         let stringValue = (data.value && data.value.type === 'Buffer') ?

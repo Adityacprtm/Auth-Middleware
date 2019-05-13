@@ -28,9 +28,9 @@ function RegisterValidator() {
 
     this.showErrors = function (a) {
         $('.modal-form-errors .modal-body p').text('Please correct the following problems :');
-        var ul = $('.modal-form-errors .modal-body ul');
+        let ul = $('.modal-form-errors .modal-body ul');
         ul.empty();
-        for (var i = 0; i < a.length; i++) ul.append('<li>' + a[i] + '</li>');
+        for (let i = 0; i < a.length; i++) ul.append('<li>' + a[i] + '</li>');
         this.alert.modal('show');
     }
 }
@@ -41,8 +41,8 @@ RegisterValidator.prototype.showInvalidName = function () {
 }
 
 RegisterValidator.prototype.validateForm = function () {
-    var e = [];
-    for (var i = 0; i < this.controlGroups.length; i++) this.controlGroups[i].removeClass('error');
+    let e = [];
+    for (let i = 0; i < this.controlGroups.length; i++) this.controlGroups[i].removeClass('error');
     if (this.validateDeviceName(this.formFields[0].val()) == false) {
         this.controlGroups[0].addClass('error'); e.push('Please Enter Your Device Name');
     }

@@ -1,15 +1,15 @@
-var optionsMQTT, client, token, optionsDevice
+let optionsMQTT, client, token, optionsDevice
 
 const crypto = require('crypto')
-var mqtt = require('mqtt')
-var request = require('request')
-var key = "c15f2d07f8c3949a822f05dab4837d07"
-var iv = "78b3e8e9a5428b9c197a7826e5d9ce83"
-var id = "a334859eeb658b83f6233ff77a88627bfdfe03bd3b26652b7c36f8005c1f97c3"
-var pwd = "fe24a834f5a1b27361b584514e6de87b2edd4cb419b62c9f4965205bba604de5"
-var clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+let mqtt = require('mqtt')
+let request = require('request')
+let key = "c15f2d07f8c3949a822f05dab4837d07"
+let iv = "78b3e8e9a5428b9c197a7826e5d9ce83"
+let id = "a334859eeb658b83f6233ff77a88627bfdfe03bd3b26652b7c36f8005c1f97c3"
+let pwd = "fe24a834f5a1b27361b584514e6de87b2edd4cb419b62c9f4965205bba604de5"
+let clientID = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
-var connect = function (token) {
+let connect = function (token) {
     optionsMQTT = {
         port: 1883,
         username: token,
@@ -22,8 +22,8 @@ var connect = function (token) {
     })
 
     setInterval(function () {
-        var topic = clientID + '/office'
-        var payload = {
+        let topic = 'mqttjs_74145d49/office'
+        let payload = {
             protocol: client.options.protocol,
             timestamp: new Date().getTime().toString(),
             topic: topic,
@@ -63,7 +63,7 @@ var connect = function (token) {
     })
 }
 
-var checkToken = function () {
+let checkToken = function () {
     if (token) {
         connect(token)
     } else {
@@ -94,7 +94,7 @@ var checkToken = function () {
     }
 }
 
-var decrypt = function (cipher) {
+let decrypt = function (cipher) {
     let encryptedText = Buffer.from(cipher, 'hex');
     let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encryptedText);
@@ -102,9 +102,9 @@ var decrypt = function (cipher) {
     return decrypted.toString();
 }
 
-var encrypt = function (plain) {
-    var cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    var encrypted = cipher.update(plain);
+let encrypt = function (plain) {
+    let cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+    let encrypted = cipher.update(plain);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex')
 }

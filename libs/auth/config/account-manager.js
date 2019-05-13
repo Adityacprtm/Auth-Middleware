@@ -4,7 +4,7 @@ const ACCOUNT_DB = 'accounts',
 	URI = 'mongodb://127.0.0.1:27017/',
 	DB = 'auth-middleware'
 
-var db, accounts;
+let db, accounts;
 MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
 	if (e) {
 		console.log(e);
@@ -18,7 +18,7 @@ MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
 
 const guid = function () {
 	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-		var r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16);
+		let r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16);
 	});
 }
 
@@ -97,7 +97,7 @@ exports.addNewAccount = function (newData, callback) {
 exports.updateAccount = function (newData, callback) {
 	console.log('asaw')
 	let findOneAndUpdate = function (data) {
-		var o = {
+		let o = {
 			name: data.name,
 			email: data.email,
 		}
@@ -137,32 +137,32 @@ exports.deleteAccount = function (user, callback) {
 	private encryption & validation methods
 */
 
-var generateSalt = function () {
-	var set = '0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ';
-	var salt = '';
-	for (var i = 0; i < 10; i++) {
-		var p = Math.floor(Math.random() * set.length);
+let generateSalt = function () {
+	let set = '0123456789abcdefghijklmnopqurstuvwxyzABCDEFGHIJKLMNOPQURSTUVWXYZ';
+	let salt = '';
+	for (let i = 0; i < 10; i++) {
+		let p = Math.floor(Math.random() * set.length);
 		salt += set[p];
 	}
 	return salt;
 }
 
-var md5 = function (str) {
+let md5 = function (str) {
 	return crypto.createHash('md5').update(str).digest('hex');
 }
 
-var saltAndHash = function (pass, callback) {
-	var salt = generateSalt();
+let saltAndHash = function (pass, callback) {
+	let salt = generateSalt();
 	callback(salt + md5(pass + salt));
 }
 
-var validatePassword = function (plainPass, hashedPass, callback) {
-	var salt = hashedPass.substr(0, 10);
-	var validHash = salt + md5(plainPass + salt);
+let validatePassword = function (plainPass, hashedPass, callback) {
+	let salt = hashedPass.substr(0, 10);
+	let validHash = salt + md5(plainPass + salt);
 	callback(null, hashedPass === validHash);
 }
 
-var getObjectId = function (id) {
+let getObjectId = function (id) {
 	return new require('mongodb').ObjectID(id);
 }
 

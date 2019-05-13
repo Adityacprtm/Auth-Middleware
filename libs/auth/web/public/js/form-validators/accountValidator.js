@@ -24,15 +24,15 @@ function AccountValidator() {
 	}
 
 	this.validateEmail = function (e) {
-		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(e);
 	}
 
 	this.showErrors = function (a) {
 		$('.modal-form-errors .modal-body p').text('Please correct the following problems :');
-		var ul = $('.modal-form-errors .modal-body ul');
+		let ul = $('.modal-form-errors .modal-body ul');
 		ul.empty();
-		for (var i = 0; i < a.length; i++) ul.append('<li>' + a[i] + '</li>');
+		for (let i = 0; i < a.length; i++) ul.append('<li>' + a[i] + '</li>');
 		this.alert.modal('show');
 	}
 
@@ -49,8 +49,8 @@ AccountValidator.prototype.showInvalidUserName = function () {
 }
 
 AccountValidator.prototype.validateForm = function () {
-	var e = [];
-	for (var i = 0; i < this.controlGroups.length; i++) this.controlGroups[i].removeClass('error');
+	let e = [];
+	for (let i = 0; i < this.controlGroups.length; i++) this.controlGroups[i].removeClass('error');
 	if (this.validateName(this.formFields[0].val()) == false) {
 		this.controlGroups[0].addClass('error'); e.push('Please Enter Your Name');
 	}

@@ -1,7 +1,7 @@
 
 function RegisterController() {
 
-    var that = this;
+    let that = this;
 
     // redirect to homepage when cancel button is clicked //
     $('#register-form-btn1').click(function () { window.location.href = '/device'; });
@@ -26,8 +26,8 @@ function RegisterController() {
 
     this.deleteDevice = function () {
         $('.modal-confirm').modal('hide');
-        var that = this;
-        var id = document.getElementById('id-tf').value
+        let that = this;
+        let id = document.getElementById('id-tf').value
         $.ajax({
             url: '/delete?id=' + id,
             type: 'POST',
@@ -41,7 +41,7 @@ function RegisterController() {
     }
 
     this.attemptLogout = function () {
-        var that = this;
+        let that = this;
         $.ajax({
             url: '/logout',
             type: 'POST',

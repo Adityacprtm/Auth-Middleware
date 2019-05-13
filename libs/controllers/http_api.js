@@ -107,7 +107,7 @@ module.exports = (app) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
-                var user = req.session.user.user
+                let user = req.session.user.user
                 DM.getDevice(user, (err, devices) => {
                     res.render('dashboard', {
                         title: 'Dashboard',
@@ -145,7 +145,7 @@ module.exports = (app) => {
                 res.redirect('/');
             } else {
                 if (req.query.id) {
-                    var id = req.query.id
+                    let id = req.query.id
                     DM.checkId(id, (err, data) => {
                         if (data == null) {
                             res.status(400);
@@ -194,7 +194,7 @@ module.exports = (app) => {
         if (req.session.user == null) {
             res.redirect('/');
         } else {
-            var user = req.session.user.user
+            let user = req.session.user.user
             DM.getDevice(user, (err, devices) => {
                 res.json({ user: user, dvc: devices })
             })
@@ -207,7 +207,7 @@ module.exports = (app) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
-                var user = req.session.user.user
+                let user = req.session.user.user
                 DM.getDevice(user, (err, devices) => {
                     res.render('addDevice', {
                         title: 'Register Device',

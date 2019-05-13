@@ -5,7 +5,7 @@ globalEventEmitter.setMaxListeners(0)
 const KEYS_SET_NAME = 'topics'
 
 module.exports = function (app) {
-    var Data, buildKey
+    let Data, buildKey
     buildKey = (key) => 'topic:' + key
 
     Data = (function () {
@@ -56,7 +56,7 @@ module.exports = function (app) {
     })()
 
     Data.find = (pattern, callback) => {
-        var foundRecord
+        let foundRecord
         foundRecord = (key) => {
             return app.redis.client.get(buildKey(key), (err, value) => {
                 if (err) {
@@ -81,7 +81,7 @@ module.exports = function (app) {
         } else {
             app.redis.client.smembers(KEYS_SET_NAME, (err, topics) => {
                 if (err) console.log(err)
-                var i, len, results, topic
+                let i, len, results, topic
                 results = []
                 for (i = 0, len = topics.length; i < len; i++) {
                     topic = topics[i]
@@ -98,7 +98,7 @@ module.exports = function (app) {
     }
 
     Data.findOrCreate = function () {
-        var arg, args, callback, key, value
+        let arg, args, callback, key, value
         args = Array.prototype.slice.call(arguments)
         key = args.shift()
         arg = args.shift()
@@ -110,7 +110,7 @@ module.exports = function (app) {
         }
         app.redis.client.get(buildKey(key), (err, oldValue) => {
             if (err) console.log(err)
-            var data
+            let data
             data = Data.fromRedis(key, oldValue)
             if (value != null) {
                 data.value = value
@@ -121,7 +121,7 @@ module.exports = function (app) {
     }
 
     Data.fromRedis = function (topic, value) {
-        var data
+        let data
         data = new Data(topic)
         data.jsonValue = value
         return data

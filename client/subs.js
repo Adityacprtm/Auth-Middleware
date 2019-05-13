@@ -1,12 +1,12 @@
-var mqtt = require('mqtt')
-var options = {
+let mqtt = require('mqtt')
+let options = {
     port: 1883,
     username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiIyYWtqdXRqNW53MyIsImRldmljZV9uYW1lIjoiYXJkdWlubyIsInRpbWVzdGFtcCI6IjE1NTYwMTQzMDkwNTkiLCJyb2xlIjoic3Vic2NyaWJlciIsImlhdCI6MTU1NjAxNDMwOSwiZXhwIjoxNTU2MDE0NDg5LCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.ebI9Klmg8uRATd-WEUt0GnETOtI56Y2oX4jh0KPQKR8',
     password: ''
 }
-var client = mqtt.connect('mqtt://127.0.0.1', options)
+let client = mqtt.connect('mqtt://127.0.0.1', options)
 client.on('connect', function (packet) {
-    var topic = "office"
+    let topic = "office"
     console.log('connected')
     client.subscribe(topic, {
         qos: 1

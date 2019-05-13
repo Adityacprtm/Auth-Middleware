@@ -1,7 +1,7 @@
 
 function DeviceController() {
 	// bind event listeners to button clicks //
-	var that = this;
+	let that = this;
 
 	// handle user logout //
 	$('#btn-logout').click(function () { that.attemptLogout(); });
@@ -13,7 +13,7 @@ function DeviceController() {
     $('#btn-add-device').click(function () { window.location.href = '/register'; });
 
 	this.attemptLogout = function () {
-		var that = this;
+		let that = this;
 		$.ajax({
 			url: '/logout',
 			type: 'POST',

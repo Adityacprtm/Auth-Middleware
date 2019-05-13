@@ -1,4 +1,4 @@
-var coap, request, key, crypto, token, optionsDevice, topic = '9d0af761/home', payload, req, id, pwd
+let coap, request, key, crypto, token, optionsDevice, topic = '9d0af761/home', payload, req, id, pwd
 
 crypto = require('crypto')
 coap = require('coap')
@@ -9,7 +9,7 @@ id = "9233dd8d00bd5665843710fe38c11d9feae7ad257f0c4d3e47ae77232700ce23"
 pwd = "e503caf81207173100ffca6107a56ca6dfe332246cd5cff25d78b0110793e3cd"
 client_id = Math.random().toString(16).substr(2, 8)
 
-var connect = function (token) {
+let connect = function (token) {
     setInterval(function () {
         req = coap.request({
             host: '127.0.0.1',
@@ -50,7 +50,7 @@ var connect = function (token) {
     }, 5000)
 }
 
-var checkToken = function () {
+let checkToken = function () {
     optionsDevice = {
         url: "http://127.0.0.1/device/request",
         method: 'POST',
@@ -80,7 +80,7 @@ var checkToken = function () {
     });
 }
 
-var decrypt = function (cipher) {
+let decrypt = function (cipher) {
     let encryptedText = Buffer.from(cipher, 'hex');
     let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encryptedText);
@@ -88,9 +88,9 @@ var decrypt = function (cipher) {
     return decrypted.toString();
 }
 
-var encrypt = function (plain) {
-    var cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    var encrypted = cipher.update(plain);
+let encrypt = function (plain) {
+    let cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+    let encrypted = cipher.update(plain);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex')
 }

@@ -1,10 +1,10 @@
 $(document).ready(function () {
 
-    var hc = new DashboardController();
-    var av = new AccountValidator();
+    let hc = new DashboardController();
+    let av = new AccountValidator();
 
-    var a = [];
-    var user;
+    let a = [];
+    let user;
     $.ajax({
         url: '/api/device',
         dataType: 'json',
@@ -27,7 +27,7 @@ $(document).ready(function () {
             $('#page-header').html('No Device Registered')
         } else {
             for (let i = 0; i < a.length; i++) {
-                var topic
+                let topic
                 if (a[i].topic) { topic = a[i].topic }
                 else { topic = "Not Available" }
                 //if (a[i].role == 'subscriber') { a[i].iv = "Use Publisher IV"; a[i].key = "Use Publisher Key" }

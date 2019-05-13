@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
-    var rdc = new RegisterController();
-    var rv = new RegisterValidator();
+    let rdc = new RegisterController();
+    let rv = new RegisterValidator();
 
     $('#register-form').ajaxForm({
         beforeSubmit: function (formData, jqForm, options) {

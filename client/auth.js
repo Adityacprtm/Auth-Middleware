@@ -1,6 +1,6 @@
-var uuid = require('uuid')
+let uuid = require('uuid')
 
-var request = require('request'),
+let request = require('request'),
     //username = "user",
     //password = "secret_key",
     //username = "6aba8c90a10f23edf3f82c7a0c77e9bc9125eb66",
@@ -8,7 +8,7 @@ var request = require('request'),
     url = "http://127.0.0.1:8080/"
     //auth = "Basic " + new Buffer.from(username + ":" + password).toString('base64')
 
-var optionsDevice = {
+let optionsDevice = {
     url: url + "device/request",
     method: 'POST',
     headers: {
@@ -22,7 +22,7 @@ var optionsDevice = {
     }
 };
 
-var validDevice = {
+let validDevice = {
     url: url + "valid",
     method: 'POST',
     headers: {

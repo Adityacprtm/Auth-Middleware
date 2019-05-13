@@ -5,7 +5,7 @@ module.exports = (app) => {
     const DM = require('../auth/config/device-manager')
 
     return io.on('connection', (socket) => {
-        var token, authorized, subscriptions, subscription
+        let token, authorized, subscriptions, subscription
 
         if (socket.handshake.query && socket.handshake.query.token) {
             token = socket.handshake.query.token

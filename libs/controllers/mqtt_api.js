@@ -9,7 +9,7 @@ module.exports = (app) => {
         if (!self.clients) self.clients = {}
 
         client.on('connect', (packet) => {
-            var token, authorized
+            let token, authorized
             token = packet.username
             client.user = packet.username
             self.clients[packet.clientId] = client

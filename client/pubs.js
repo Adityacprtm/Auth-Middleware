@@ -1,16 +1,16 @@
-var mqtt = require('mqtt');
+let mqtt = require('mqtt');
 
-var options = {
+let options = {
     port: 1883,
     username: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiJhbm9qdXRoNmo2eiIsImRldmljZV9uYW1lIjoibm9kZW1jdSIsInRpbWVzdGFtcCI6IjE1NTYwMTI0NDM0NjgiLCJpcCI6Ijo6ZmZmZjoxMjcuMC4wLjEiLCJyb2xlIjoic3Vic2NyaWJlciIsImlhdCI6MTU1NjAxMjQ0MywiZXhwIjoxNTU2MDEyNjIzLCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.GYw-L0rSBISVV_efowRGaabNpTp0m45sOcfXwFvHATk',
     password: ''
 }
-var client = mqtt.connect('mqtt://127.0.0.1', options);
+let client = mqtt.connect('mqtt://127.0.0.1', options);
 client.on('connect', function () {
     console.log('Connected')
     setInterval(function () {
-        var topic = 'office'
-        var payload = {
+        let topic = 'office'
+        let payload = {
             protocol: client.options.protocol,
             timestamp: new Date().getTime().toString(),
             topic: topic,

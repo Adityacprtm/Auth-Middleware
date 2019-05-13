@@ -1,8 +1,8 @@
 
 $(document).ready(function () {
 
-	var lv = new LoginValidator();
-	var lc = new LoginController();
+	let lv = new LoginValidator();
+	let lc = new LoginController();
 
 	// main login form //
 
@@ -26,7 +26,7 @@ $(document).ready(function () {
 
 	$("input:text:visible:first").focus();
 	// $('#btn_remember').click(function () {
-	// 	var span = $(this).find('span');
+	// 	let span = $(this).find('span');
 	// 	if (span.hasClass('fa-minus-square')) {
 	// 		span.removeClass('fa-minus-square');
 	// 		span.addClass('fa-check-square');
