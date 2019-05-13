@@ -106,7 +106,7 @@ module.exports.start = start = (opts, cb) => {
         cookie: { maxAge: 86400000 },
         store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort + '/auth-middleware' })
     }))
-    express.use('/', app.controllers.auth_api)
+    express.use('/', app.controllers.http_api)
     express.listen(opts.auth, () => {
         logger.http('HTTP server listening on port %d in %s mode', opts.auth, process.env.NODE_ENV)
     })

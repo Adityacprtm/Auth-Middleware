@@ -17,7 +17,6 @@ MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
     } else {
         db = client.db(DB);
         devices = db.collection(DEVICE_DB);
-        // index fields 'user' & 'email' for faster new account validation //
         devices.createIndex({ user: 1, email: 1 });
     }
 })
@@ -89,8 +88,8 @@ exports.addDevice = function (dataDevice, callback) {
                     dataDevice.device_id = tempId
                 }
                 dataDevice.password = hashing(dataDevice.user, Date.now())
+                dataDevice.iv = generateIv().toString(ENCODE)
                 dataDevice.key = generateKey(dataDevice.password).toString(ENCODE)
-                // dataDevice.iv = generateIv().toString(ENCODE)
                 devices.insertOne(dataDevice, (err, r) => {
                     if (err) { callback(err) }
                     else { callback(null) }
@@ -144,11 +143,10 @@ var encrypt = function (id, plain, callback) {
     devices.findOne({ device_id: id }, function (err, rep) {
         if (err) console.log(err)
         if (rep) {
-            iv = generateIv()
-            cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(rep.key, ENCODE), iv);
+            cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(rep.key, ENCODE), Buffer.from(rep.iv, ENCODE));
             encrypted = cipher.update(plain);
             encrypted = Buffer.concat([encrypted, cipher.final()]);
-            callback({ iv: iv.toString(ENCODE), cipher: encrypted.toString(ENCODE) })
+            callback(encrypted.toString(ENCODE))
         }
     })
 }

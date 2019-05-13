@@ -1,10 +1,11 @@
-var request, key, id, pwd, token, optionsDevice, topic = '5669243/home'
+var request, key, id, pwd, token, optionsDevice, topic = '9d0af761/home'
 var io = require('socket.io-client')
 const crypto = require('crypto')
 request = require('request')
-key = "095229fdf251543df2db17f98ae3c8d4"
-id = "72ee9e48d7f7405fa06f37667fe6de7f2de86342f89537943bc28e331ddbb1ea"
-pwd = "5fa9247e1c13d7507a429cdcecfad12e8e1a3720f0cecd3181a742ca4edf0539"
+key = "80aa33c70d02e965486aa32ef4b3911c"
+iv = "c3d117ad733ac0fa24660918c9aa4c1c"
+id = "8d2b0107bd09bb49913969cfd4052f293104c7d7b25571da427588669cad04d9"
+pwd = "436e6bac38abe9a41dce038f74822501ac71d6c8db91f92c89b1c753a9794a55"
 
 var connect = function (token) {
     var socket = io.connect('http://127.0.0.1:' + 3000, {
@@ -35,7 +36,7 @@ var connect = function (token) {
     })
 }
 
-var checkToken = function (callback) {
+var checkToken = function () {
     if (token) {
         connect(token)
     } else {
@@ -52,26 +53,34 @@ var checkToken = function (callback) {
             }
         }
         request(optionsDevice, function (error, response, body) {
-            if (error) callback(error, null)
+            if (error) console.log(error, null)
             if (response.statusCode == 200 && body) {
                 token = decrypt(body)
+                console.log("Got Token");
                 connect(token)
             } else if (response.statusCode == 401) {
                 data = body
                 console.log(data)
-                setTimeout(function () { console.log("Wait 10 seconds"); checkToken(); }, 10000)
+                console.log("Wait 10 seconds");
+                setTimeout(function () { checkToken(); }, 10000)
             }
         });
     }
 }
 
 var decrypt = function (cipher) {
-    let iv = Buffer.from(cipher.iv, 'hex');
-    let encryptedText = Buffer.from(cipher.cipher, 'hex');
-    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), iv);
+    let encryptedText = Buffer.from(cipher, 'hex');
+    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
+}
+
+var encrypt = function (plain) {
+    var cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
+    var encrypted = cipher.update(plain);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return encrypted.toString('hex')
 }
 
 checkToken()

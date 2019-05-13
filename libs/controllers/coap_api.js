@@ -30,15 +30,17 @@ module.exports = (app) => {
                     logger.error('There\'s an error: %s', err)
                     sendResponse('5.00', {
                         message: 'Internal Server Error',
-                        additional: err
+                        additional: err.name
                     })
                 } else {
                     authorized = reply.status
                     if (authorized) {
                         if (reply.data.role == 'publisher') {
-                            delete req.payload.token
+                            data = JSON.parse(req.payload)
+                            delete data.token
+                            payload = Buffer.from(JSON.stringify(data))
                             DM.saveTopic(reply.data.device_id, topic)
-                            Data.findOrCreate(topic, req.payload)
+                            Data.findOrCreate(topic, payload)
                             logger.coap('Incoming %s request from %s for topic %s ', req.method, req.rsinfo.address, topic)
                             sendResponse('2.01', {
                                 message: 'Created'
@@ -74,6 +76,7 @@ module.exports = (app) => {
             topic = /^\/r\/(.+)$/.exec(modUrl)[1]
             token = url.parse(req.url, true).query.token;
             // logger.coap('Client from %s Connecting . . .', req.rsinfo.address)
+            token = JSON.parse(req.payload).token
             DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
