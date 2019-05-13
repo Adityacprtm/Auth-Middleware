@@ -16,8 +16,8 @@ cookieParser = require('cookie-parser')
 app.redis = {}
 fs = require('fs')
 https = require('https').createServer({
-    key: fs.readFileSync('server.key'),
-    cert: fs.readFileSync('server.cert')
+    key: fs.readFileSync('cert/server.key'),
+    cert: fs.readFileSync('cert/server.cert')
 }, express)
 
 
