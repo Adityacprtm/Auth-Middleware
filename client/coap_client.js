@@ -1,8 +1,8 @@
-let coap, request, key, crypto, token, optionsDevice, topic = 'home', payload, req, id, pwd
+let coap, request, key, crypto, token = null, optionsDevice, topic = 'home', payload, req, id, pwd
 
 crypto = require('crypto')
 coap = require('coap')
-request = require('request')
+request = require('sync-request')
 key = 'bf3a6cd87447a449e8773ed0f379e7ed'
 iv = 'aeea2de30c794f7951aa86e0bd33b46d'
 id = "9233dd8d00bd5665843710fe38c11d9feae7ad257f0c4d3e47ae77232700ce23"
@@ -42,6 +42,7 @@ let connect = function (token) {
                 console.log('Message Sent ' + topic);
             } else if (res.code == "4.00") {
                 console.log(res.payload.toString())
+                getToken()
             }
         })
 
@@ -51,32 +52,39 @@ let connect = function (token) {
 }
 
 let getToken = function () {
-    optionsDevice = {
-        url: "http://127.0.0.1/device/request",
-        headers: {
-            'content-type': 'application/json'
-        },
-        json: true,
-        body: {
+    var response = request('POST', 'http://127.0.0.1/device/request', {
+        json: {
             "device_id": id,
             "password": pwd
-        }
-    }
-    request.post(optionsDevice, function (error, response, body) {
-        //console.log(Date.now())
-        if (error) console.log(error, null)
-        if (response.statusCode == 200 && body) {
-            token = decrypt(body)
-            console.log("Got Token");
-            //console.log(Date.now())
-            connect(token)
-        } else if (response.statusCode == 401) {
-            data = body
-            console.log(data)
-            console.log("Wait 10 seconds");
-            setTimeout(function () { getToken(); }, 10000)
-        }
+        },
     });
+    if (response.statusCode == 200 && response.body) {
+        token = decrypt(response.body.toString())
+        //console.log(token)
+        console.log("Got Token");
+        //console.log(Date.now())
+        connect(token)
+    } else if (response.statusCode == 401) {
+        data = response.body.toString()
+        console.log(data)
+        console.log("Wait 10 seconds");
+        setTimeout(function () { getToken(); }, 10000)
+    }
+    // request.post(optionsDevice, function (error, response, body) {
+    //     //console.log(Date.now())
+    //     if (error) console.log(error, null)
+    //     if (response.statusCode == 200 && body) {
+    //         token = decrypt(body)
+    //         console.log("Got Token");
+    //         //console.log(Date.now())
+    //         callback(token)
+    //     } else if (response.statusCode == 401) {
+    //         data = body
+    //         console.log(data)
+    //         console.log("Wait 10 seconds");
+    //         setTimeout(function () { getToken(); }, 10000)
+    //     }
+    // });
 }
 
 let decrypt = function (cipher) {
@@ -93,7 +101,12 @@ let encrypt = function (plain) {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex')
 }
- 
-if (require.main === module) { 
-    getToken(); 
+
+if (require.main === module) {
+    if (token) {
+        connect(token)
+    } else {
+        getToken();
+    }
+    console.log(token)
 }
