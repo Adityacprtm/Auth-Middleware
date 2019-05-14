@@ -1,4 +1,4 @@
-let mqtt, request, crypto, client, token, options, clientID, key, iv, id, pwd
+let mqtt, request, crypto, client, token, clientID, key, iv, id, pwd, topic, payload, valid = false
 
 crypto = require('crypto')
 mqtt = require('mqtt')
@@ -9,7 +9,7 @@ iv = "78b3e8e9a5428b9c197a7826e5d9ce83"
 id = "a334859eeb658b83f6233ff77a88627bfdfe03bd3b26652b7c36f8005c1f97c3"
 pwd = "fe24a834f5a1b27361b584514e6de87b2edd4cb419b62c9f4965205bba604de5"
 
-let mqtt_publish = function (token) {
+let connect = function (token) {
     client = mqtt.connect('mqtt://127.0.0.1', {
         port: 1883,
         username: token,
@@ -22,28 +22,26 @@ let mqtt_publish = function (token) {
     })
 
     setInterval(function () {
-        let topic = clientID + '/office'
-        let payload = {
-            protocol: client.options.protocol,
-            timestamp: new Date().getTime().toString(),
-            topic: topic,
-            sensor: {
-                tipe: "4325",
-                index: "string",
-                ip: client.options.host,
-                module: "string"
-            },
-            humidity: {
-                value: Math.floor(Math.random() * 100),
-                unit: "string"
-            },
-            temperature: {
-                value: Math.floor(Math.random() * 100),
-                unit: "string"
+        if (valid) {
+            topic = clientID + '/office'
+            payload = {
+                protocol: client.options.protocol,
+                timestamp: new Date().getTime().toString(),
+                topic: topic,
+                humidity: {
+                    value: Math.floor(Math.random() * 100),
+                    unit: "string"
+                },
+                temperature: {
+                    value: Math.floor(Math.random() * 100),
+                    unit: "string"
+                }
             }
+            client.publish(topic, JSON.stringify(payload), { qos: 1 });
+            console.log('Message Sent ' + topic);
+        } else {
+            token = getToken()
         }
-        client.publish(topic, JSON.stringify(payload), { qos: 1 });
-        console.log('Message Sent ' + topic);
     }, 10000);
 
     client.on('close', (error) => {
@@ -62,30 +60,25 @@ let mqtt_publish = function (token) {
     })
 }
 
-options = {
-    url: "http://127.0.0.1/device/request",
-    method: 'POST',
-    headers: {
-        'content-type': 'application/json'
-    },
-    json: true,
-    body: {
-        "device_id": id,
-        "password": pwd
-    }
-}
-request(options, function (error, response, body) {
-    if (error) console.log(error, null)
-    if (response.statusCode == 200 && body) {
-        token = decrypt(body)
-        mqtt_publish(token)
+let getToken = function () {
+    var response = request('POST', 'http://127.0.0.1/device/request', {
+        json: {
+            "device_id": id,
+            "password": pwd
+        },
+    });
+    if (response.statusCode == 200 && response.body) {
+        token = decrypt(response.body.toString())
+        console.log("Got Token");
+        valid = true
+        return token
     } else if (response.statusCode == 401) {
-        data = body
+        data = response.body.toString()
         console.log(data)
         console.log("Wait 10 seconds");
         setTimeout(function () { getToken(); }, 10000)
     }
-});
+}
 
 let decrypt = function (cipher) {
     let encryptedText = Buffer.from(cipher, 'hex');
@@ -100,4 +93,8 @@ let encrypt = function (plain) {
     let encrypted = cipher.update(plain);
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex')
+}
+
+if (require.main === module) {
+    connect(token)
 }
