@@ -1,4 +1,4 @@
-let coap, request, key, crypto, token, optionsDevice, topic = '9d0af761/home', payload, req, id, pwd
+let coap, request, key, crypto, token, optionsDevice, topic = 'home', payload, req, id, pwd
 
 crypto = require('crypto')
 coap = require('coap')
@@ -7,14 +7,14 @@ key = 'bf3a6cd87447a449e8773ed0f379e7ed'
 iv = 'aeea2de30c794f7951aa86e0bd33b46d'
 id = "9233dd8d00bd5665843710fe38c11d9feae7ad257f0c4d3e47ae77232700ce23"
 pwd = "e503caf81207173100ffca6107a56ca6dfe332246cd5cff25d78b0110793e3cd"
-client_id = Math.random().toString(16).substr(2, 8)
+client_id = '9d0af761'
 
 let connect = function (token) {
     setInterval(function () {
         req = coap.request({
             host: '127.0.0.1',
             port: '5683',
-            pathname: '/r/' + topic,
+            pathname: '/r/' + client_id + '/' + topic,
             //query: 'token=' + token,
             method: 'post',
             confirmable: true
@@ -40,8 +40,8 @@ let connect = function (token) {
             console.log(res.code)
             if (res.code == "2.01") {
                 console.log('Message Sent ' + topic);
-            } else if (res.code == "5.00") {
-                checkToken()
+            } else if (res.code == "4.00") {
+                console.log(res.payload.toString())
             }
         })
 
@@ -50,10 +50,9 @@ let connect = function (token) {
     }, 5000)
 }
 
-let checkToken = function () {
+let getToken = function () {
     optionsDevice = {
         url: "http://127.0.0.1/device/request",
-        method: 'POST',
         headers: {
             'content-type': 'application/json'
         },
@@ -63,19 +62,19 @@ let checkToken = function () {
             "password": pwd
         }
     }
-    request(optionsDevice, function (error, response, body) {
-        console.log(Date.now())
+    request.post(optionsDevice, function (error, response, body) {
+        //console.log(Date.now())
         if (error) console.log(error, null)
         if (response.statusCode == 200 && body) {
             token = decrypt(body)
             console.log("Got Token");
-            console.log(Date.now())
+            //console.log(Date.now())
             connect(token)
         } else if (response.statusCode == 401) {
             data = body
             console.log(data)
             console.log("Wait 10 seconds");
-            setTimeout(function () { checkToken(); }, 10000)
+            setTimeout(function () { getToken(); }, 10000)
         }
     });
 }
@@ -94,5 +93,7 @@ let encrypt = function (plain) {
     encrypted = Buffer.concat([encrypted, cipher.final()]);
     return encrypted.toString('hex')
 }
-
-checkToken()
+ 
+if (require.main === module) { 
+    getToken(); 
+}

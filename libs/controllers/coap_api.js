@@ -28,8 +28,8 @@ module.exports = (app) => {
             DM.validity(token, (err, reply) => {
                 if (err != null) {
                     logger.error('There\'s an error: %s', err)
-                    sendResponse('5.00', {
-                        message: 'Internal Server Error',
+                    sendResponse('4.00', {
+                        message: 'Bad Request',
                         additional: err.name
                     })
                 } else {
