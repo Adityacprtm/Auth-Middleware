@@ -15,7 +15,6 @@ function RegisterController() {
     // handle device deletion //
     $('.modal-confirm .submit').click(function () { that.deleteDevice(); });
 
-    // 
     $('#btn-logout').click(function () { that.attemptLogout(); });
 
     $('#btn-dashboard').click(function () { window.location.href = '/dashboard'; });

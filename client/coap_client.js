@@ -1,4 +1,4 @@
-let coap, request, key, crypto, token = null, topic = 'home', payload, req, id, pwd, valid = false
+let coap, request, key, crypto, token, topic = 'home', payload, req, id, pwd, valid = false
 
 crypto = require('crypto')
 coap = require('coap')
@@ -7,7 +7,7 @@ key = 'bf3a6cd87447a449e8773ed0f379e7ed'
 iv = 'aeea2de30c794f7951aa86e0bd33b46d'
 id = '9233dd8d00bd5665843710fe38c11d9feae7ad257f0c4d3e47ae77232700ce23'
 pwd = 'e503caf81207173100ffca6107a56ca6dfe332246cd5cff25d78b0110793e3cd'
-client_id = '9d0af761'
+client_id = 'coap_9d0af761'
 
 let connect = function (token) {
     setInterval(function () {
@@ -67,8 +67,7 @@ let getToken = function () {
         return token
     } else if (response.statusCode == 401) {
         data = response.body.toString()
-        console.log(data)
-        console.log("Wait 10 seconds");
+        console.log(data + ' - Wait 10 seconds')
         setTimeout(function () { getToken(); }, 10000)
     }
 }

@@ -1,10 +1,10 @@
 - device = typeof(dvc) != 'undefined' ? dvc : { }
 input(type='hidden', value= device._id)#userId
 
-#register-form-container.center-vertical.shadow
+#box-form-container.center-vertical.shadow
 	form.card.card-body.bg-light(method='post')#register-form
 		h2
-		h6#sub Register your device.
+		h6#sub
 		hr
 		p#head-collapse
 			a.text-decoration-none.dropdown-toggle.btn.btn-primary(data-toggle='collapse', href="#collapseExample", role='button') Security Information 
@@ -13,23 +13,21 @@ input(type='hidden', value= device._id)#userId
 				label.col-sm-4.col-form-label.col-form-label-sm#id-lb Device ID
 				.col-sm-7
 					input.form-control#id-tf(type='text', name='device_id', value=device.device_id)
-					//textarea#id-tf.form-control(style='resize: none;', name='device_id', disabled='') #{device.device_id}
 			
 			.form-group.row
 				label.col-sm-4.col-form-label.col-form-label-sm#pwd-lb Device Password
 				.col-sm-7
 					input.form-control#pwd-tf(type='text', name='device_password', value=device.password)
-					//textarea#pwd-tf.form-control(style='resize: none;', name='device_pwd', disabled='') #{device.password}
 			
 			.form-group.row
 				label.col-sm-4.col-form-label.col-form-label-sm#key-lb Key
 				.col-sm-7
 					input.form-control#key-tf(type='text', name='key', value=device.key)
 
-			//- .form-group.row
-			//- 	label.col-sm-4.col-form-label.col-form-label-sm#iv-lb Initialization Vector
-			//- 	.col-sm-7
-			//- 		input.form-control#iv-tf(type='text', name='iv', value=device.iv)
+			.form-group.row
+				label.col-sm-4.col-form-label.col-form-label-sm#iv-lb IV
+				.col-sm-7
+					input.form-control#iv-tf(type='text', name='iv', value=device.iv)
 			hr
 		.form-group.row
 			label.col-sm-4.col-form-label.col-form-label-sm Device Name

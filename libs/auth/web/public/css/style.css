@@ -22,9 +22,9 @@ hr {
     font-size: 0.8rem;
 }
 
-#login .btn-btm {
+/* #login .btn-btm {
     padding: 0;
-}
+} */
 
 #login .btn-left {
     margin-right: 4%;
@@ -34,14 +34,14 @@ hr {
     color: #fff;
 }
 
-#login #btn_remember {
+/* #login #btn_remember {
     background: #fff;
     border: 1px solid #ced4da;
-}
+} */
 
-#login #btn_remember:hover {
+/* #login #btn_remember:hover {
     background: #f8f9fa;
-}
+} */
 
 #login h6,
 #login label {
@@ -59,19 +59,19 @@ hr {
     padding-right: 10px;
 }
 
-#login hr {
+/* #login hr {
     clear: left;
-}
+} */
 
 #login .btm-links {
     font-size: 0.8rem;
     margin: 2px 0 0 0;
 }
 
-#login .btm-links #forgot-password {
+/* #login .btm-links #forgot-password {
     float: left;
     margin-left: 16px;
-}
+} */
 
 #login .btm-links #create-account {
     float: right;
@@ -82,72 +82,35 @@ hr {
 	Account window
 */
 
-#account-form-container {
+#box-form-container {
     width: 470px;
 }
 
-#account-form-container label {
+#box-form-container label {
     text-align: right;
     margin-top: 2px;
 }
 
-#account-form-container input,
-#account-form-container select {
+#box-form-container input,
+#box-form-container select {
     font-size: 0.875rem;
 }
 
-#account-form-container .col-sm-9 {
+#box-form-container .col-sm-9 {
     padding-left: 0;
 }
 
-#account-form-container .margin-zero {
+#box-form-container .margin-zero {
     margin-bottom: 0;
 }
 
-#account-form-container .form-buttons {
+#box-form-container .form-buttons {
     display: flex;
     align-items: center;
     justify-content: flex-end;
 }
 
-#account-form-container .form-buttons>:not(:last-child) {
-    margin-right: 0.5rem;
-}
-
-/*
-	Register window
-*/
-
-
-#register-form-container {
-    width: 480px;
-}
-
-#register-form-container label {
-    text-align: right;
-    margin-top: 2px;
-}
-
-#register-form-container input,
-#register-form-container select {
-    font-size: 0.875rem;
-}
-
-#register-form-container .col-sm-9 {
-    padding-left: 0;
-}
-
-#register-form-container .margin-zero {
-    margin-bottom: 0;
-}
-
-#register-form-container .form-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-#register-form-container .form-buttons>:not(:last-child) {
+#box-form-container .form-buttons>:not(:last-child) {
     margin-right: 0.5rem;
 }
 
@@ -216,18 +179,11 @@ hr {
         width: 300px;
     }
 
-    #account-form-container {
-        width: 300px;
-    }
-    #account-form-container label {
-        text-align: left;
-    }
-
-    #register-form-container {
+    #box-form-container {
         width: 300px;
     }
 
-    #register-form-container label {
+    #box-form-container label {
         text-align: left;
     }
 }

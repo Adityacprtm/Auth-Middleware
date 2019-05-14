@@ -60,7 +60,6 @@ $(document).ready(function () {
     // $('#name-tf').focus();
 
     // customize the account settings form //
-    //$('#account-form #sub').text('Here are the current settings for your account.');
     $('#account-form-btn1').html('Delete');
     $('#account-form-btn1').removeClass('btn-outline-dark');
     $('#account-form-btn1').addClass('btn-danger');

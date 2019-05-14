@@ -23,8 +23,6 @@ $(document).ready(function () {
         }
     });
 
-    // $('#name-tf').focus();
-
     // customize the account settings form //
     $('#register-form h2').text('Device Setting');
     $('#register-form #sub').text('Here are the current settings for your device.');
