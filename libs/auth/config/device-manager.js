@@ -172,7 +172,8 @@ let hashing = function (str, timestamp) {
 }
 
 let generateKey = function (password) {
-    return crypto.scryptSync(password, generateSalt(), 16);
+    //return crypto.scryptSync(password, generateSalt(), 16);
+    return crypto.pbkdf2Sync(password, generateSalt(), 1000, 16, 'sha256');
 }
 
 let generateIv = function () {
