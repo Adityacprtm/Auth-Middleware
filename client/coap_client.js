@@ -3,17 +3,17 @@ let coap, request, key, crypto, token, topic = 'home', payload, req, id, pwd, va
 crypto = require('crypto')
 coap = require('coap')
 request = require('sync-request')
-key = 'bf3a6cd87447a449e8773ed0f379e7ed'
-iv = 'aeea2de30c794f7951aa86e0bd33b46d'
-id = '9233dd8d00bd5665843710fe38c11d9feae7ad257f0c4d3e47ae77232700ce23'
-pwd = 'e503caf81207173100ffca6107a56ca6dfe332246cd5cff25d78b0110793e3cd'
+key = '0b8eedf201714c9a0c6b8f0676a1d705'
+iv = '4d39447d472fa4281ec821755b55a3b7'
+id = 'f8f725530e7642660746cd8de70a9b4859b55fc33d2e76d14e8d5ad7ce9b3b67'
+pwd = 'a5dd08be9d78c0777282e9c9a21d6d783a2353a2898b02d67a4d87f32c72f48d'
 client_id = 'coap_9d0af761'
 
 let connect = function (token) {
     setInterval(function () {
         if (valid) {
             req = coap.request({
-                host: '127.0.0.1',
+                host: '192.168.0.21',
                 port: '5683',
                 pathname: '/r/' + client_id + '/' + topic,
                 //query: 'token=' + token,
@@ -54,7 +54,7 @@ let connect = function (token) {
 }
 
 let getToken = function () {
-    var response = request('POST', 'http://127.0.0.1/device/request', {
+    var response = request('POST', 'http://192.168.0.21/device/request', {
         json: {
             "device_id": id,
             "password": pwd
