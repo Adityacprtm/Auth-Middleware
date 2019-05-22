@@ -68,7 +68,13 @@ exports.validity = function (token, callback) {
         if (err != null) {
             callback(err, { 'status': false })
         } else {
-            callback(null, { 'status': true, 'data': reply })
+            devices.findOne({ device_id: reply.device_id }, function (e, o) {
+                if (o) {
+                    callback(null, { 'status': true, 'data': reply })
+                } else {
+                    callback(err, { 'status': false })
+                }
+            })
         }
     })
 }

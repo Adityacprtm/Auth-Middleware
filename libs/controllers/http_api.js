@@ -12,7 +12,7 @@ module.exports = (app) => {
     router.route('/device/request')
         .post((req, res) => {
             logger.http('Incoming Device for %s request token from %s ', req.method, req.ip)
-            const payload = req.body
+            let payload = req.body
             payload.ip = req.ip
             payload.timestamp = Date.now().toString()
             DM.request(payload, (err, data) => {
@@ -40,6 +40,46 @@ module.exports = (app) => {
                     res.status(405).send({ message: 'Method Not Allowed' })
                 }
             })
+        })
+
+    router.route('/device/check')
+        .post((req, res) => {
+            logger.http('Incoming Device for %s check token from %s ', req.method, req.ip)
+        })
+        .get((req, res) => {
+            logger.http('Incoming Device for %s check token from %s ', req.method, req.ip)
+            if (req.body.token) {
+                DM.validity(req.body.token, (err, reply) => {
+                    if (err != null) {
+                        logger.error('There\'s an error: %s', err)
+                        res.format({
+                            'application/json': function () {
+                                res.status(401).send(err)
+                            }
+                        })
+                    } else {
+                        if (reply.status) {
+                            res.format({
+                                'application/json': function () {
+                                    res.status(200).send({ status: 'Valid' })
+                                }
+                            })
+                        } else {
+                            res.format({
+                                'application/json': function () {
+                                    res.status(200).send({ status: 'Unvalid' })
+                                }
+                            })
+                        }
+                    }
+                })
+            } else {
+                res.format({
+                    'application/json': function () {
+                        res.status(200).send({ message: 'Token Not Found' })
+                    }
+                })
+            }
         })
 
     /*
