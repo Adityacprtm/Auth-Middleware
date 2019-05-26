@@ -9,7 +9,7 @@ id = 'b71ec17d9d9d2cd542282f1fd6f97d9e8c1e075644f16057942b126f8eeef9a5'
 pwd = '8d67a6d0b397c212cb7f3a758c80b10d5d7c7e6087471e05e8d4c9b885b78ed8'
 client_id = 'ws_74145d49'
 host = '192.168.0.13'
-topic = 'home'
+topic = '5665920/home'
 
 let connect = function (token) {
     //    setInterval(function () {
