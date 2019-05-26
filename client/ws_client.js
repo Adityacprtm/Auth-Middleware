@@ -1,52 +1,54 @@
-let socket, crypto, request, key, id, iv, pwd, token, topic = 'coap_9d0af761/home', io, client_id, valid = false
+let socket, crypto, request, key, id, iv, pwd, token, topic, io, client_id, valid = false, host
 
 crypto = require('crypto')
 io = require('socket.io-client')
 request = require('sync-request')
-key = '75d53688f7914780e6ee07a03df0d9f4'
-iv = 'b7aac508bbfcb319b0337c84ee8d70ce'
-id = '2f437b0fadd4a43c2bd9cd4bb98e32e699ef142cf06406b1d8cc85058a485ee5'
-pwd = 'd3ece217a1cd2eae549a55ca92f904a3a80ef678722ee968fa6411a3534d8659'
+key = '0580b85cff97f393378e97707158cb4f'
+iv = '4173bcbf7992b024fa9f3fac2847aba7'
+id = 'b71ec17d9d9d2cd542282f1fd6f97d9e8c1e075644f16057942b126f8eeef9a5'
+pwd = '8d67a6d0b397c212cb7f3a758c80b10d5d7c7e6087471e05e8d4c9b885b78ed8'
 client_id = 'ws_74145d49'
+host = '192.168.0.13'
+topic = 'home'
 
 let connect = function (token) {
-//    setInterval(function () {
-        if (valid) {
-            socket = io.connect('http://192.168.0.21:' + 3000, {
-                reconnect: true,
-                query: {
-                    token: token
-                }
-            });
+    //    setInterval(function () {
+    if (valid) {
+        socket = io.connect('http://' + host + ':' + 3000, {
+            reconnect: true,
+            query: {
+                token: token
+            }
+        });
 
-            socket.on('connect', () => {
-                socket.emit('subscribe', topic);
-            });
+        socket.on('connect', () => {
+            socket.emit('subscribe', topic);
+        });
 
-            socket.on('/r/' + topic, (data) => {
-                console.log(data)
-            })
+        socket.on('/r/' + topic, (data) => {
+            console.log(data)
+        })
 
-            socket.on('error', (error) => {
-                console.log(error)
-            });
+        socket.on('error', (error) => {
+            console.log(error)
+        });
 
-            socket.on('disconnect', (error) => {
-                console.log(error)
-            })
+        socket.on('disconnect', (error) => {
+            console.log(error)
+        })
 
-            socket.on('error_msg', (reason) => {
-                console.log(reason);
-            })
-        } else {
-            token = getToken()
-            connect(token)
-        }
-//    }, 5000)
+        socket.on('error_msg', (reason) => {
+            console.log(reason);
+        })
+    } else {
+        token = getToken()
+        connect(token)
+    }
+    //    }, 5000)
 }
 
 let getToken = function () {
-    var response = request('POST', 'http://192.168.0.21/device/request', {
+    var response = request('POST', 'http://' + host + '/device/request', {
         json: {
             "device_id": id,
             "password": pwd

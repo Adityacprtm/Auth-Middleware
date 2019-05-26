@@ -131,6 +131,7 @@ module.exports = (app) => {
                 email: req.body['email'],
                 user: req.body['user'],
                 pass: req.body['pass'],
+                admin: false
             }, function (err) {
                 if (err) {
                     res.status(400).send(err);

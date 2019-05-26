@@ -1,21 +1,24 @@
-let coap, request, key, crypto, token, topic = 'home', payload, req, id, pwd, valid = false
+let coap, request, key, crypto, token, topic, payload, req, id, pwd, valid = false, host
 
 crypto = require('crypto')
 coap = require('coap')
 request = require('sync-request')
-key = '0b8eedf201714c9a0c6b8f0676a1d705'
-iv = '4d39447d472fa4281ec821755b55a3b7'
-id = 'f8f725530e7642660746cd8de70a9b4859b55fc33d2e76d14e8d5ad7ce9b3b67'
-pwd = 'a5dd08be9d78c0777282e9c9a21d6d783a2353a2898b02d67a4d87f32c72f48d'
+key = '17922ef895d7f9eed51705fa618902d7'
+iv = 'ccc1730477fee41329a875286abce3f0'
+id = '4a83e9a771004924495dd843aaeac76e145df42e2db7968aa660181cfda5229e'
+pwd = '641e4670ff70255391ca779a385766edaafb1df0fbff5f3a28e0f19a9dc08e46'
 client_id = 'coap_9d0af761'
+host = '192.168.0.13'
+topic = 'home'
 
 let connect = function (token) {
     setInterval(function () {
         if (valid) {
             req = coap.request({
-                host: '192.168.0.21',
+                host: host,
                 port: '5683',
-                pathname: '/r/' + client_id + '/' + topic,
+                //pathname: '/r/' + client_id + '/' + topic,
+                pathname: '/r/' + topic,
                 //query: 'token=' + token,
                 method: 'post',
                 confirmable: true
@@ -54,7 +57,7 @@ let connect = function (token) {
 }
 
 let getToken = function () {
-    var response = request('POST', 'http://192.168.0.21/device/request', {
+    var response = request('POST', 'http://' + host + '/device/request', {
         json: {
             "device_id": id,
             "password": pwd
