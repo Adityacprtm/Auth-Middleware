@@ -305,9 +305,11 @@ module.exports = (app) => {
 
     /* Print All User Path*/
     router.get('/print', function (req, res) {
-        if (req.session.user.user == 'admin') {
+        if (req.session.user.admin == true) {
             AM.getAllRecords(function (e, accounts) {
-                res.render('print', { title: 'Account List', accts: accounts });
+                DM.getAllDevice(function (e, devices) {
+                    res.render('print', { title: 'Account List', accts: accounts, dvc: devices });
+                })
             })
         } else {
             res.render('error', { title: 'Forbidden', message: 'forbidden you don\'t have permission to access ' + req.path + ' on this server' })

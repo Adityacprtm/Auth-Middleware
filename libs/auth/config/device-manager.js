@@ -128,6 +128,14 @@ exports.getDevice = function (user, callback) {
         });
 }
 
+exports.getAllDevice = function (callback) {
+    devices.find().toArray(
+        function (e, res) {
+            if (e) callback(e)
+            else callback(null, res)
+        });
+}
+
 exports.deleteDevice = function (id, user, callback) {
     if (id != null) {
         devices.deleteOne({ device_id: id }, callback)

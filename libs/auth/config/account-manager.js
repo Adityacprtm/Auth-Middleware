@@ -85,7 +85,7 @@ exports.addNewAccount = function (newData, callback) {
 					saltAndHash(newData.pass, function (hash) {
 						newData.pass = hash;
 						// append date stamp when record was created //
-						newData.date = new Date().toString()
+						newData.date = new Date().toLocaleString()
 						accounts.insertOne(newData, callback);
 					});
 				}
@@ -121,8 +121,11 @@ exports.updateAccount = function (newData, callback) {
 exports.getAllRecords = function (callback) {
 	accounts.find().toArray(
 		function (e, res) {
-			if (e) callback(e)
-			else callback(null, res)
+			if (e) {
+				callback(e)
+			} else {
+				callback(null, res)
+			}
 		});
 }
 
