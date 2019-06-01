@@ -3,7 +3,7 @@ extends layout
 block content
 	nav.navbar.sticky-top.navbar-expand-lg.navbar-light.bg-light
 		.container
-			a.navbar-brand(href='/') Dashboard
+			a.navbar-brand(href='/dashboard') Dashboard
 	
 	div.container(style='margin:20px auto')
 		form.card.card-body.bg-light.shadow
@@ -21,19 +21,19 @@ block content
 						th Role
 				tbody
 				- for (var i = 0; i < accts.length; i++)
-					if accts[i].admin == true
+					- accts.sort((a, b) => (a.username > b.username) ? 1 : -1)
+					if accts[i].admin == 1
 						- role = "admin"
 					else
 						- role = "user"
 					tr
 						td(style='text-align:center')= i+1
 						td= accts[i].name
-						td= accts[i].user
+						td= accts[i].username
 						td= accts[i].email
 						td= accts[i].date
 						td
 							input.btn-sm.btn-primary(type='button' disabled value=role)
-							//input.btn-sm.btn-danger(type='button' value='delete' onclick="deleteRow(this)")
 		br
 		form.card.card-body.bg-light.shadow
 			h3#page-header
@@ -58,6 +58,3 @@ block content
 						td= dvc[i].role
 						td= dvc[i].description
 						td= dvc[i].date
-
-block scripts
-	script(src='/js/controllers/printController.js')

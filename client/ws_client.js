@@ -51,7 +51,7 @@ let getToken = function () {
     var response = request('POST', 'http://' + host + '/device/request', {
         json: {
             "device_id": id,
-            "password": pwd
+            "device_password": pwd
         },
     });
     if (response.statusCode == 200 && response.body) {

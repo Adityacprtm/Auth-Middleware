@@ -1,28 +1,14 @@
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
-const MongoClient = require('mongodb').MongoClient;
+const db = require('../db/db');
 const SECRET_KEY = 'supersecret',
     EXP_TIME = '30s',
     ISSUER = 'adityacprtm.com',
-    DEVICE_DB = 'devices',
-    URI = 'mongodb://127.0.0.1:27017/',
-    DB = 'auth-middleware',
     ALGORITHM = 'aes-128-cbc',
     ENCODE = 'hex'
 
-let db, devices;
-MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
-    if (e) {
-        console.log(e);
-    } else {
-        db = client.db(DB);
-        devices = db.collection(DEVICE_DB);
-        devices.createIndex({ user: 1, email: 1 });
-    }
-})
-
 exports.request = function (payload, callback) {
-    devices.findOne({ device_id: payload.device_id, password: payload.password }, function (err, docs) {
+    db.get('SELECT * FROM devices WHERE device_id=? AND device_password=?', [payload.device_id, payload.device_password], (err, docs) => {
         if (err) { callback(err, null) }
         if (docs) {
             if (docs.token) {
@@ -68,7 +54,7 @@ exports.validity = function (token, callback) {
         if (err != null) {
             callback(err, { 'status': false })
         } else {
-            devices.findOne({ device_id: reply.device_id }, function (e, o) {
+            db.get('SELECT * FROM devices WHERE device_id=?', reply.device_id, (e, o) => {
                 if (o) {
                     callback(null, { 'status': true, 'data': reply })
                 } else {
@@ -81,22 +67,22 @@ exports.validity = function (token, callback) {
 
 exports.addDevice = function (dataDevice, callback) {
     let tempId
-    devices.findOne({ device_name: dataDevice.device_name, user: dataDevice.user }, function (err, rep) {
+    db.get('SELECT * FROM devices WHERE device_name=? AND user=?', [dataDevice.device_name, dataDevice.user], (err, rep) => {
         if (rep) {
             callback('device-name-taken')
         } else {
             tempId = hashing(dataDevice.device_name, Date.now())
-            devices.findOne({ device_id: tempId }, (err, rep) => {
+            db.get('SELECT * FROM devices WHERE device_id=?', tempId, (err, rep) => {
                 if (err) { callback(err) }
                 if (rep) {
                     dataDevice.device_id = hashing(dataDevice.device_name, Date.now())
                 } else {
                     dataDevice.device_id = tempId
                 }
-                dataDevice.password = hashing(dataDevice.user, Date.now())
+                dataDevice.device_password = hashing(dataDevice.user, Date.now())
                 dataDevice.iv = generateIv().toString(ENCODE)
-                dataDevice.key = generateKey(dataDevice.password).toString(ENCODE)
-                devices.insertOne(dataDevice, (err, r) => {
+                dataDevice.key = generateKey(dataDevice.device_password).toString(ENCODE)
+                db.run('INSERT INTO devices (device_name,role,description,user,device_id,device_password,key,iv,date) VALUES (?,?,?,?,?,?,?,?,datetime("now","localtime"))', [dataDevice.device_name, dataDevice.role, dataDevice.description, dataDevice.user, dataDevice.device_id, dataDevice.device_password, dataDevice.key, dataDevice.iv], (err, o) => {
                     if (err) { callback(err) }
                     else { callback(null) }
                 })
@@ -106,41 +92,35 @@ exports.addDevice = function (dataDevice, callback) {
 }
 
 exports.updateDevice = function (newData, callback) {
-    let data = {
-        role: newData.role,
-        description: newData.description
-    }
-    devices.findOneAndUpdate({ device_id: newData.device_id }, { $set: data }, { returnOriginal: false }, callback)
+    db.run('UPDATE devices SET role=?,description=? WHERE device_id=?', [newData.role, newData.description, newData.device_id], callback)
 }
 
 exports.checkId = function (id, callback) {
-    devices.findOne({ device_id: id }, (err, rep) => {
+    db.get('SELECT * FROM devices WHERE device_id=?', id, (err, rep) => {
         if (rep) { callback(null, rep) }
         else { callback(err, null) }
     })
 }
 
 exports.getDevice = function (user, callback) {
-    devices.find({ user: user }).toArray(
-        function (e, res) {
-            if (e) callback(e)
-            else callback(null, res)
-        });
+    db.all('SELECT * FROM devices WHERE user=?', user, (e, res) => {
+        if (e) callback(e)
+        else callback(null, res)
+    })
 }
 
 exports.getAllDevice = function (callback) {
-    devices.find().toArray(
-        function (e, res) {
-            if (e) callback(e)
-            else callback(null, res)
-        });
+    db.all('SELECT * FROM devices', (e, res) => {
+        if (e) callback(e)
+        else callback(null, res)
+    })
 }
 
 exports.deleteDevice = function (id, user, callback) {
     if (id != null) {
-        devices.deleteOne({ device_id: id }, callback)
+        db.run('DELETE FROM devices WHERE device_id=?', id, callback)
     } else if (user != null) {
-        devices.deleteMany({ user: user }, callback)
+        db.run('DELETE FROM devices WHERE user=?', user, callback)
     }
 }
 
@@ -181,7 +161,6 @@ let hashing = function (str, timestamp) {
 
 let generateKey = function (password) {
     return crypto.scryptSync(password, generateSalt(), 16);
-    //return crypto.pbkdf2Sync(password, generateSalt(), 1000, 16, 'sha256');
 }
 
 let generateIv = function () {
@@ -209,8 +188,7 @@ let generateToken = function (docs, callback) {
         if (err) {
             callback(err.name, null)
         } else {
-            docs.token = token
-            devices.updateOne({ device_id: payload.device_id }, { $set: docs }, function (err) {
+            db.run('UPDATE devices SET ip=?,timestamp=?,token=? WHERE device_id=?', [docs.ip, docs.timestamp, token, docs.device_id], (err) => {
                 if (err) callback(err, null)
             })
             callback(null, token)

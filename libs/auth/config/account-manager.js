@@ -1,47 +1,25 @@
 const crypto = require('crypto');
-const MongoClient = require('mongodb').MongoClient;
-const ACCOUNT_DB = 'accounts',
-	URI = 'mongodb://127.0.0.1:27017/',
-	DB = 'auth-middleware'
-
-let db, accounts;
-MongoClient.connect(URI, { useNewUrlParser: true }, function (e, client) {
-	if (e) {
-		console.log(e);
-	} else {
-		db = client.db(DB);
-		accounts = db.collection(ACCOUNT_DB);
-		// index fields 'user' & 'email' for faster new account validation //
-		accounts.createIndex({ user: 1, email: 1 });
-	}
-});
-
-const guid = function () {
-	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-		let r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16);
-	});
-}
+const db = require('../db/db');
 
 /*
 	login validation methods
 */
-
 exports.autoLogin = function (user, pass, callback) {
-	accounts.findOne({ user: user }, function (e, o) {
+	db.get('SELECT password FROM accounts WHERE username=?', [user], (e, o) => {
 		if (o) {
 			o.pass == pass ? callback(o) : callback(null);
 		} else {
 			callback(null);
 		}
-	});
+	})
 }
 
 exports.manualLogin = function (user, pass, callback) {
-	accounts.findOne({ user: user }, function (e, o) {
+	db.get('SELECT * FROM accounts WHERE username=?', [user], (e, o) => {
 		if (o == null) {
 			callback('user-not-found');
 		} else {
-			validatePassword(pass, o.pass, function (err, res) {
+			validatePassword(pass, o.password, function (err, res) {
 				if (res) {
 					callback(null, o);
 				} else {
@@ -49,60 +27,59 @@ exports.manualLogin = function (user, pass, callback) {
 				}
 			});
 		}
-	});
+	})
 }
 
 exports.generateLoginKey = function (user, ipAddress, callback) {
 	let cookie = guid();
-	accounts.findOneAndUpdate({ user: user }, {
-		$set: {
-			ip: ipAddress,
-			cookie: cookie
-		}
-	}, { returnOriginal: false }, function (e, o) {
+	db.run('UPDATE accounts SET ip=?,cookie=? WHERE username=?', [ipAddress, cookie, user], (e, o) => {
 		callback(cookie);
 	});
 }
 
 exports.validateLoginKey = function (cookie, ipAddress, callback) {
 	// ensure the cookie maps to the user's last recorded ip address //
-	accounts.findOne({ cookie: cookie, ip: ipAddress }, callback);
+	db.get('SELECT username,password FROM accounts WHERE cookie=? AND ip=?', [cookie, ipAddress], callback);
 }
 
 /*
 	record insertion, update & deletion methods
 */
-
 exports.addNewAccount = function (newData, callback) {
-	accounts.findOne({ user: newData.user }, function (e, o) {
-		if (o) {
-			callback('username-taken');
-		} else {
-			accounts.findOne({ email: newData.email }, function (e, o) {
-				if (o) {
-					callback('email-taken');
-				} else {
-					saltAndHash(newData.pass, function (hash) {
-						newData.pass = hash;
-						// append date stamp when record was created //
-						newData.date = new Date().toLocaleString()
-						accounts.insertOne(newData, callback);
-					});
-				}
-			});
-		}
-	});
+	db.serialize(function () {
+		const query1 = 'SELECT username FROM accounts WHERE username=?';
+		const query2 = 'SELECT email FROM accounts WHERE email=?';
+		const query3 = 'INSERT INTO accounts (name,email,username,password,date,ip) VALUES (?,?,?,?,datetime("now", "localtime"),?)';
+		db.get(query1, [newData.user], (err, row) => {
+			if (err) throw err;
+			if (row) {
+				callback('username-taken');
+			} else {
+				db.get(query2, newData.email, (err, row) => {
+					if (row) {
+						callback('email-taken');
+					} else {
+						saltAndHash(newData.pass, function (hash) {
+							newData.pass = hash;
+							// append date stamp when record was created //
+							newData.date = new Date().toLocaleString()
+							db.run(query3, [newData.name, newData.email, newData.user, newData.pass, newData.ip], callback)
+						});
+					}
+				})
+			}
+		})
+	})
 }
 
 exports.updateAccount = function (newData, callback) {
-	console.log('asaw')
 	let findOneAndUpdate = function (data) {
 		let o = {
 			name: data.name,
 			email: data.email,
 		}
 		if (data.pass) o.pass = data.pass;
-		accounts.findOneAndUpdate({ _id: getObjectId(data.id) }, { $set: o }, { returnOriginal: false }, callback);
+		db.run('UPDATE accounts SET name=?,email=?,password=? WHERE username=?', [o.name, o.email, o.pass, data.id], callback);
 	}
 	if (newData.pass == '') {
 		findOneAndUpdate(newData);
@@ -119,21 +96,20 @@ exports.updateAccount = function (newData, callback) {
 */
 
 exports.getAllRecords = function (callback) {
-	accounts.find().toArray(
-		function (e, res) {
-			if (e) {
-				callback(e)
-			} else {
-				callback(null, res)
-			}
-		});
+	db.all('SELECT * FROM accounts', (err, row) => {
+		if (err) {
+			callback(err)
+		} else {
+			callback(null, row)
+		}
+	})
 }
 
 exports.deleteAccount = function (user, callback) {
-	accounts.deleteOne({ user: user }, (err, o) => {
+	db.run('DELETE FROM accounts WHERE username=?', user, (err, o) => {
 		if (err) { callback(err, null) }
 		else (callback(null, o))
-	});
+	})
 }
 
 /*
@@ -169,3 +145,8 @@ let getObjectId = function (id) {
 	return new require('mongodb').ObjectID(id);
 }
 
+const guid = function () {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+		let r = Math.random() * 16 | 0, v = c == 'x' ? r : r & 0x3 | 0x8; return v.toString(16);
+	});
+}

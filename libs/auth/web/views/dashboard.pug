@@ -15,7 +15,7 @@ block content
                 span.navbar-toggler-icon
             .collapse.navbar-collapse.justify-content-end#navbarNavAltMarkup
                 .navbar-nav
-                    if user.user == 'admin'
+                    if user.admin == 1
                         button.btn.navbar-btn.btn-outline-danger#btn-logout Sign Out
                         button.btn.navbar-btn.btn-outline-primary#btn-print Print
                     else
@@ -51,7 +51,7 @@ block content
                     .form-group.row
                         label.col-sm-3.col-form-label.col-form-label-sm Username
                         .col-sm-9
-                            input.form-control(disabled='', type='text', name='user', value= user.user)
+                            input.form-control(disabled='', type='text', name='user', value= user.username)
 
                     .form-group.row
                         label.col-sm-3.col-form-label.col-form-label-sm Password
@@ -63,7 +63,7 @@ block content
                         button(type='submit')#account-form-btn2.btn.btn-primary
                     br
                     hr
-                    if user.user != 'admin'
+                    if user.admin == 0
                         .form-group.row
                             label.col-sm-3.col-form-label.col-form-label-sm Devices
                             .col-sm-9
@@ -72,13 +72,13 @@ block content
                         .form-group.row
                             label.col-sm-3.col-form-label.col-form-label-sm Active Topics
                             .col-sm-9
-                                each dvc in device
-                                    if dvc.topic != null
-                                        input.form-control(disabled='', value= dvc.topic)
+                                each dvct in device
+                                    if dvct.topic != null
+                                        input.form-control(disabled='', value= dvct.topic)
                                 else
                                     input.form-control(disabled='', value= 0)
 
-    if user.admin == true
+    if user.admin == 1
         br
     else
         br

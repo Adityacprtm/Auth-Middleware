@@ -1,5 +1,5 @@
 let start, configure, app, logger, coap, consign, session, bodyParser, cookieParser,
-    argv, setup, setupAscoltatore, redis, coapServer, MongoStore, fs, https;
+    argv, setup, setupAscoltatore, redis, coapServer, MongoStore, fs, https, SQLiteStore;
 
 coap = require('coap')
 mqtt = require('mqtt')
@@ -7,7 +7,8 @@ express = require('express')()
 session = require('express-session')
 module.exports.app = app = require('http').Server(express)
 io = require('socket.io')(app)
-MongoStore = require('connect-mongo')(session)
+//MongoStore = require('connect-mongo')(session)
+SQLiteStore = require('connect-sqlite3')(session);
 consign = require('consign')
 ascoltatori = require('ascoltatori')
 redis = require('redis')
@@ -111,7 +112,7 @@ module.exports.start = start = (opts, cb) => {
         resave: true,
         saveUninitialized: true,
         cookie: { maxAge: 86400000 },
-        store: new MongoStore({ url: 'mongodb://' + opts.mongoHost + ':' + opts.mongoPort + '/auth-middleware' })
+        store: new SQLiteStore({ db: 'database.db', table: 'sessions', dir: './libs/auth/db/' })
     }))
     express.use('/', app.controllers.http_api)
     express.listen(opts.http, () => {

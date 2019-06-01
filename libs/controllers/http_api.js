@@ -111,8 +111,8 @@ module.exports = (app) => {
                     res.status(400).send(e);
                 } else {
                     req.session.user = o;
-                    AM.generateLoginKey(o.user, req.ip, function (key) {
-                        logger.http('User %s has login', req.session.user.user)
+                    AM.generateLoginKey(o.username, req.ip, function (key) {
+                        logger.http('User %s has login', req.session.user.username)
                         res.cookie('login', key, { maxAge: 900000 });
                         res.status(200).send(o);
                     });
@@ -148,7 +148,7 @@ module.exports = (app) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
-                let user = req.session.user.user
+                let user = req.session.user.username
                 DM.getDevice(user, (err, devices) => {
                     res.render('dashboard', {
                         title: 'Dashboard',
@@ -163,7 +163,7 @@ module.exports = (app) => {
                 res.redirect('/');
             } else {
                 AM.updateAccount({
-                    id: req.session.user._id,
+                    id: req.session.user.id,
                     name: req.body['name'],
                     email: req.body['email'],
                     pass: req.body['pass'],
@@ -172,7 +172,7 @@ module.exports = (app) => {
                         res.status(400).send('error-updating-account');
                     } else {
                         req.session.user = o.value;
-                        logger.http('User %s has changed the account', req.session.user.user)
+                        logger.http('User %s has changed the account', req.session.user.username)
                         res.status(200).send('ok');
                     }
                 });
@@ -220,7 +220,7 @@ module.exports = (app) => {
                                 if (err) {
                                     res.status(400).send(err);
                                 } else {
-                                    logger.http('User %s has changed the device data', req.session.user.user)
+                                    logger.http('User %s has changed the device data', req.session.user.username)
                                     res.status(200).send('ok');
                                 }
                             })
@@ -235,7 +235,7 @@ module.exports = (app) => {
         if (req.session.user == null) {
             res.redirect('/');
         } else {
-            let user = req.session.user.user
+            let user = req.session.user.username
             DM.getDevice(user, (err, devices) => {
                 res.json({ user: user, dvc: devices })
             })
@@ -248,11 +248,9 @@ module.exports = (app) => {
             if (req.session.user == null) {
                 res.redirect('/');
             } else {
-                let user = req.session.user.user
-                DM.getDevice(user, (err, devices) => {
-                    res.render('addDevice', {
-                        title: 'Register Device',
-                    })
+                let user = req.session.user.username
+                res.render('addDevice', {
+                    title: 'Register Device',
                 })
             }
         })
@@ -261,13 +259,12 @@ module.exports = (app) => {
                 device_name: req.body['device_name'],
                 role: req.body['role'],
                 description: req.body['description'],
-                user: req.session.user.user,
-                date: new Date().toLocaleString()
+                user: req.session.user.username
             }, (err) => {
                 if (err) {
                     res.status(400).send(err);
                 } else {
-                    logger.http('User %s has register the device', req.session.user.user)
+                    logger.http('User %s has register the device', req.session.user.username)
                     res.status(200).send('ok');
                 }
             })
@@ -280,20 +277,20 @@ module.exports = (app) => {
                 if (err != null) {
                     res.status(400).send('record not found');
                 } else {
-                    logger.http('User %s has deleted the device', req.session.user.user)
+                    logger.http('User %s has deleted the device', req.session.user.username)
                     res.status(200).send('ok');
                 }
             })
         } else {
-            AM.deleteAccount(req.session.user.user, function (err, obj) {
+            AM.deleteAccount(req.session.user.username, function (err, obj) {
                 if (err != null) {
                     res.status(400).send('record not found');
                 } else {
-                    DM.deleteDevice(null, req.session.user.user, (err, obj) => {
+                    DM.deleteDevice(null, req.session.user.username, (err, obj) => {
                         if (err != null) {
                             res.status(400).send('record not found');
                         } else {
-                            logger.http('User %s has deleted the account and devices', req.session.user.user)
+                            logger.http('User %s has deleted the account and devices', req.session.user.username)
                             res.clearCookie('login');
                             req.session.destroy(function (e) { res.status(200).send('ok'); });
                         }
@@ -305,7 +302,7 @@ module.exports = (app) => {
 
     /* Print All User Path*/
     router.get('/print', function (req, res) {
-        if (req.session.user.admin == true) {
+        if (req.session.user.admin == 1) {
             AM.getAllRecords(function (e, accounts) {
                 DM.getAllDevice(function (e, devices) {
                     res.render('print', { title: 'Account List', accts: accounts, dvc: devices });
