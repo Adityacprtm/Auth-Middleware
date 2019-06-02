@@ -46,15 +46,18 @@ block content
 						th User
 						th Device Name
 						th Role
+						th Topic
 						th Description
 						th Device Created
 				tbody
 				- for (var i = 0; i < dvc.length; i++)
 					- dvc.sort((a, b) => (a.user > b.user) ? 1 : -1)
+					- if (!dvc[i].topic) dvc[i].topic='Not available yet'
 					tr
 						td(style='text-align:center')= i+1
 						td= dvc[i].user
 						td= dvc[i].device_name
 						td= dvc[i].role
+						td= dvc[i].topic
 						td= dvc[i].description
 						td= dvc[i].date
