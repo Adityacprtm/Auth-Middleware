@@ -4,11 +4,11 @@ crypto = require('crypto')
 mqtt = require('mqtt')
 request = require('sync-request')
 clientID = 'mqttjs_74145d49'
-key = "1e595ebbbe8cca1a3cbaeb6411d16fe4"
-iv = "fa86d7acf043382456746dabcd8db57b"
-id = "8d037303aa8ac4f5d3af37a1dcd3d217eca85de58180fc5591bac69a93629981"
-pwd = "ade9bf56fe452eb68c599c989b414d31770683d8bc3fae88f191228ba2025f1c"
-host = '192.168.0.13'
+key = "7f9d684d4f343c1449956fdb326a36a1"
+iv = "da646191c1b3963d9c7d7ab804b5409a"
+id = "faf14ea6d73f0d523c160e669698e9ec1c47bc982a7cb73c1d736d21f90ca3a5"
+pwd = "7d7e7202436336ab9d2ebcf7aa5d09db43abcf87f0f09f327e9b1c2f60a85cf0"
+host = '192.168.137.10'
 topic = 'home'
 
 let connect = function (token) {

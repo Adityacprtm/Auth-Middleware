@@ -3,13 +3,13 @@ let socket, crypto, request, key, id, iv, pwd, token, topic, io, client_id, vali
 crypto = require('crypto')
 io = require('socket.io-client')
 request = require('sync-request')
-key = '0580b85cff97f393378e97707158cb4f'
-iv = '4173bcbf7992b024fa9f3fac2847aba7'
-id = 'b71ec17d9d9d2cd542282f1fd6f97d9e8c1e075644f16057942b126f8eeef9a5'
-pwd = '8d67a6d0b397c212cb7f3a758c80b10d5d7c7e6087471e05e8d4c9b885b78ed8'
+key = '1b743674584dd02e7cf0ad9678edb53b'
+iv = '372a10454eafff52515fbbb7d3eb716f'
+id = '9506a5ede78f1bf2c62d9f5405c186724f275870f7514ff8c049850f65adb066'
+pwd = 'b9ced387009865af7b30c12de6f34bd0363cb5611fcb699115489ac2e7a274c5'
 client_id = 'ws_74145d49'
-host = '192.168.43.10'
-topic = '5665920/home'
+host = '192.168.137.10'
+topic = 'home'
 
 let connect = function (token) {
     //    setInterval(function () {
