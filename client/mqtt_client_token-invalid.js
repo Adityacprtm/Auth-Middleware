@@ -1,11 +1,8 @@
-let mqtt, request, crypto, client, token, clientID, key, iv, id, pwd, topic, payload, valid = false, host
+let mqtt, request, client, token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiIwNTY5M2M1M2U5OWYxNDQ1ODU1MTNlNTgwOWJlOWQwOGE5MTJmMmM2ZDg4NTliMjBhOTdiZDE4N2NmYzgyZDk4IiwiZGV2aWNlX25hbWUiOiJub2RlbWN1LW1xdHQiLCJ0aW1lc3RhbXAiOiIxNTYxNTc0NzYxOTQ0Iiwicm9sZSI6InB1Ymxpc2hlciIsImlhdCI6MTU2MTU3NDc2MSwiZXhwIjoxNTYxNTc0ODA2LCJpc3MiOiJhZGl0eWFjcHJ0bS5jb20ifQ.iSs7PsLeiqX8PKtCFIGDZJQZIl4fqSz8ghlJI7FUjwU', clientID, key, iv, id, pwd, topic, payload, valid = true, host
 
-crypto = require('crypto')
 mqtt = require('mqtt')
 request = require('sync-request')
 clientID = '5665920'
-key = "7f9d684d4f343c1449956fdb326a36a1"
-iv = "da646191c1b3963d9c7d7ab804b5409a"
 id = "05693c53e99f144585513e5809be9d08a912f2c6d8859b20a97bd187cfc82d98"
 pwd = "292a66d43de240ef04e89284b900ce80cb2e9abdf78e7103fc66975918a8618a"
 host = '192.168.137.10'
@@ -23,10 +20,11 @@ let connect = function (token) {
         client.on('connect', function () {
             console.log('Connected')
             setInterval(function () {
+                topic = clientID + '/' + topic
                 payload = {
                     protocol: client.options.protocol,
                     timestamp: new Date().getTime().toString(),
-                    topic: clientID + '/' + topic,
+                    topic: topic,
                     humidity: {
                         value: Math.floor(Math.random() * 100),
                         unit: "string"
@@ -38,7 +36,7 @@ let connect = function (token) {
                 }
                 client.publish(topic, JSON.stringify(payload), { qos: 1 });
                 console.log('Message Sent ' + topic);
-            }, 10000);
+            }, 5000);
         })
 
         client.on('close', (error) => {
@@ -71,7 +69,6 @@ let getToken = function () {
     if (response.statusCode == 200 && response.body) {
         //token = decrypt(response.body.toString())
         token = JSON.parse(response.body).token
-        console.log(token)
         console.log("Got Token");
         valid = true
         return token
@@ -81,21 +78,6 @@ let getToken = function () {
         console.log("Wait 10 seconds");
         setTimeout(function () { getToken(); }, 10000)
     }
-}
-
-let decrypt = function (cipher) {
-    let encryptedText = Buffer.from(cipher, 'hex');
-    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
-let encrypt = function (plain) {
-    let cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    let encrypted = cipher.update(plain);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return encrypted.toString('hex')
 }
 
 if (require.main === module) {

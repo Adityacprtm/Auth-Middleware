@@ -1,10 +1,7 @@
-let coap, request, key, crypto, token, topic, payload, req, id, pwd, valid = false, host
+let coap, token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFkaXR5YSIsImlhdCI6MTUxNjIzOTAyMn0.4lwOlT2tyQbgSSsm_Kh8E22etlbOqItFSmmkSvKmtRw', topic, payload, req, id, pwd, valid = true, host
 
-crypto = require('crypto')
 coap = require('coap')
 request = require('sync-request')
-key = '17922ef895d7f9eed51705fa618902d7'
-iv = 'ccc1730477fee41329a875286abce3f0'
 id = '117f96b137b87380deb99ecc74eb3003712dca8911fb726a061cde9ee38ec6b8'
 pwd = '7b855f1173489606dc8a4d9639356238b37f44ca847ec52b509e56399b57a4eb'
 client_id = '5669243'
@@ -46,7 +43,8 @@ let connect = function (token) {
                     console.log('Message Sent ' + topic);
                 } else if (res.code == "4.00") {
                     console.log(res.payload.toString())
-                    token = getToken()
+                } else {
+                    console.log(res.payload.toString())
                 }
             })
             req.end()
@@ -54,41 +52,6 @@ let connect = function (token) {
             token = getToken()
         }
     }, 5000)
-}
-
-let getToken = function () {
-    var response = request('POST', 'http://' + host + '/device/request', {
-        json: {
-            "device_id": id,
-            "device_password": pwd
-        },
-    });
-    if (response.statusCode == 200 && response.body) {
-        //token = decrypt(response.body.toString())
-        token = JSON.parse(response.body).token
-        console.log("Got Token");
-        valid = true
-        return token
-    } else if (response.statusCode == 401) {
-        data = response.body.toString()
-        console.log(data + ' - Wait 10 seconds')
-        setTimeout(function () { getToken(); }, 10000)
-    }
-}
-
-let decrypt = function (cipher) {
-    let encryptedText = Buffer.from(cipher, 'hex');
-    let decipher = crypto.createDecipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
-let encrypt = function (plain) {
-    let cipher = crypto.createCipheriv('aes-128-cbc', Buffer.from(key, 'hex'), Buffer.from(iv, 'hex'));
-    let encrypted = cipher.update(plain);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return encrypted.toString('hex')
 }
 
 if (require.main === module) {

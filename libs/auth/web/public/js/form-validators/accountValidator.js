@@ -19,7 +19,7 @@ function AccountValidator() {
 		if ($('#userId').val() && s === '') {
 			return true;
 		} else {
-			return s.length >= 6;
+			return s.length >= 5;
 		}
 	}
 

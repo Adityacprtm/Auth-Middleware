@@ -1,4 +1,4 @@
-let socket, crypto, request, key, id, iv, pwd, token, topic, io, client_id, valid = false, host
+let socket, crypto, request, key, id, iv, pwd, token, topic, io, client_id, valid = true, host
 
 crypto = require('crypto')
 io = require('socket.io-client')
@@ -17,7 +17,7 @@ let connect = function (token) {
         socket = io.connect('http://' + host + ':' + 3000, {
             reconnect: true,
             query: {
-                token: token
+                token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkZXZpY2VfaWQiOiI2NGYxMWVkM2NiNTY1NjNmZjk2MzkwMTFkNTZjYTgxNGIyOGJhOWY3Mjk2NjZhOTViODYzYjI4YWIwNjc0YjNjIiwiZGV2aWNlX25hbWUiOiJwcm9ncmFtLXdzIiwidGltZXN0YW1wIjoiMTU2MTU3NTYyMzI1MyIsInJvbGUiOiJzdWJzY3JpYmVyIiwiaWF0IjoxNTYxNTc1NjIzLCJleHAiOjE1NjE1NzU2NjgsImlzcyI6ImFkaXR5YWNwcnRtLmNvbSJ9.XVMF_CFaoPcwlkt6S511MgcZ3wO8YF8n8Z_DOGpkU50'
             }
         });
 
@@ -51,7 +51,6 @@ let getToken = function () {
     if (response.statusCode == 200 && response.body) {
         // token = decrypt(response.body.toString())
         token = JSON.parse(response.body).token
-        console.log(token)
         console.log("Got Token");
         valid = true
         return token

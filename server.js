@@ -1,5 +1,5 @@
 let start, configure, app, logger, coap, consign, session, bodyParser, cookieParser,
-    argv, setup, setupAscoltatore, redis, coapServer, MongoStore, fs, https, SQLiteStore;
+    argv, setup, setupAscoltatore, redis, coapServer, fs, https, SQLiteStore;
 
 coap = require('coap')
 mqtt = require('mqtt')

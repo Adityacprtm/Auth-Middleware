@@ -1,4 +1,4 @@
-let socket, crypto, request, key, id, iv, pwd, token, topic, io, client_id, valid = false, host
+let socket, crypto, request, key, id, iv, pwd, token, topic, io, client_id, valid = true, host
 
 crypto = require('crypto')
 io = require('socket.io-client')
@@ -11,14 +11,14 @@ client_id = 'ws_74145d49'
 host = '192.168.137.10'
 //topic = 'home'
 
-let connect = function (token) {
+let connect = function () {
     //    setInterval(function () {
     if (valid) {
         socket = io.connect('http://' + host + ':' + 3000, {
             reconnect: true,
-            query: {
-                token: token
-            }
+            // query: {
+            //     token: token
+            // }
         });
 
         socket.on('connect', () => {
@@ -51,7 +51,6 @@ let getToken = function () {
     if (response.statusCode == 200 && response.body) {
         // token = decrypt(response.body.toString())
         token = JSON.parse(response.body).token
-        console.log(token)
         console.log("Got Token");
         valid = true
         return token
@@ -78,5 +77,5 @@ let getToken = function () {
 // }
 
 if (require.main === module) {
-    connect(token)
+    connect()
 }
