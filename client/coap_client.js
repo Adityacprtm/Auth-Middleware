@@ -8,7 +8,7 @@ iv = 'ccc1730477fee41329a875286abce3f0'
 id = '117f96b137b87380deb99ecc74eb3003712dca8911fb726a061cde9ee38ec6b8'
 pwd = '7b855f1173489606dc8a4d9639356238b37f44ca847ec52b509e56399b57a4eb'
 client_id = '5669243'
-host = '192.168.137.10'
+host = '192.168.0.14'
 topic = 'home'
 
 let connect = function (token) {
